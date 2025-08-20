@@ -17,18 +17,93 @@ public class Reparacion {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private LocalDateTime fecha_inicio;
 	
-	private LocalDateTime fecha_fin;
+	private LocalDateTime fechaInicio;
+	
+	private LocalDateTime fechaFin;
 	
 	private String descripcion;
 	
-	private long total_horas;
+	private long totalHoras;
 	
 	@Enumerated(EnumType.STRING)
 	private Estado estado;
 	
 	@ManyToOne
 	private Vehiculo vehiculo;
+
+	public Reparacion(Long id, LocalDateTime fechaInicio, LocalDateTime fechaFin, String descripcion,
+			long totalHoras, Estado estado, Vehiculo vehiculo) {
+		super();
+		this.id = id;
+		this.fechaInicio = fechaInicio;
+		this.fechaFin = fechaFin;
+		this.descripcion = descripcion;
+		this.totalHoras = totalHoras;
+		this.estado = estado;
+		this.vehiculo = vehiculo;
+	}
+
+	public Reparacion() {
+		super();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public LocalDateTime getFechaInicio() {
+		return fechaInicio;
+	}
+
+	public void setFecha_inicio(LocalDateTime fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
+
+	public LocalDateTime getFechaFin() {
+		return fechaFin;
+	}
+
+	public void setFecha_fin(LocalDateTime fechaFin) {
+		this.fechaFin = fechaFin;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public long getTotal_horas() {
+		return totalHoras;
+	}
+
+	public void setTotal_horas(long totalHoras) {
+		this.totalHoras = totalHoras;
+	}
+
+	public Estado getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Estado estado) {
+		this.estado = estado;
+	}
+
+	public Vehiculo getVehiculo() {
+		return vehiculo;
+	}
+
+	public void setVehiculo(Vehiculo vehiculo) {
+		this.vehiculo = vehiculo;
+	}
+	
+	
 
 }

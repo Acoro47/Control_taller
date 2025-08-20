@@ -1,10 +1,15 @@
 package com.taller_control.control_taller.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Vehiculo {
@@ -22,18 +27,22 @@ public class Vehiculo {
 	@Column(nullable = false, unique = true, length = 10)
 	private String matricula;
 	
-	private int valor_adquisicion;
+	private int valorAdquisicion;
 	
-	private int valor_venta; 
+	private int valorVenta;
+	
+	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Reparacion> reparaciones = new ArrayList<>();
 
-	public Vehiculo(Long id, String modelo, String marca, String matricula, int valor_adquisicion, int valor_venta) {
+	public Vehiculo(Long id, String modelo, String marca, String matricula, int valorAdquisicion, int valorVenta, List<Reparacion> reparaciones) {
 		
 		this.id = id;
 		this.modelo = modelo;
 		this.marca = marca;
 		this.matricula = matricula;
-		this.valor_adquisicion = valor_adquisicion;
-		this.valor_venta = valor_venta;
+		this.valorAdquisicion = valorAdquisicion;
+		this.valorVenta = valorVenta;
+		this.reparaciones = reparaciones;
 	}
 	
 	public Vehiculo(Long id, String matricula) {
@@ -78,19 +87,40 @@ public class Vehiculo {
 		this.matricula = matricula;
 	}
 
-	public int getValor_adquisicion() {
-		return valor_adquisicion;
+	public int getValorAdquisicion() {
+		return valorAdquisicion;
 	}
 
-	public void setValor_adquisicion(int valor_adquisicion) {
-		this.valor_adquisicion = valor_adquisicion;
+	public void setValorAdquisicion(int valorAdquisicion) {
+		this.valorAdquisicion = valorAdquisicion;
 	}
 	
-	public int getValor_venta() {
-		return valor_venta;
+	public int getValorVenta() {
+		return valorVenta;
 	}
 	
-	public void setValor_venta(int valor_venta) {
-		this.valor_venta = valor_venta;
+	public void setValorVenta(int valorVenta) {
+		this.valorVenta = valorVenta;
 	}
+
+	public List<Reparacion> getReparaciones() {
+		return reparaciones;
+	}
+
+	public void setReparaciones(List<Reparacion> reparaciones) {
+		this.reparaciones = reparaciones;
+	}
+	
+	
+	public void addReparacion(Reparacion reparacion) {
+		this.reparaciones.add(reparacion);
+		reparacion.setVehiculo(this);
+	}
+	
+	public void removeReparacion(Reparacion reparacion) {
+		this.reparaciones.remove(reparacion);
+		reparacion.setVehiculo(null);
+	}
+	
+	
 }
