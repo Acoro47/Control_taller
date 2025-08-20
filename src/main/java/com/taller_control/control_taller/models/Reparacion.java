@@ -60,7 +60,7 @@ public class Reparacion {
 		return fechaInicio;
 	}
 
-	public void setFecha_inicio(LocalDateTime fechaInicio) {
+	public void setFechaInicio(LocalDateTime fechaInicio) {
 		this.fechaInicio = fechaInicio;
 	}
 
@@ -68,7 +68,7 @@ public class Reparacion {
 		return fechaFin;
 	}
 
-	public void setFecha_fin(LocalDateTime fechaFin) {
+	public void setFechaFin(LocalDateTime fechaFin) {
 		this.fechaFin = fechaFin;
 	}
 
@@ -80,11 +80,11 @@ public class Reparacion {
 		this.descripcion = descripcion;
 	}
 
-	public long getTotal_horas() {
+	public long getTotalHoras() {
 		return totalHoras;
 	}
 
-	public void setTotal_horas(long totalHoras) {
+	public void setTotalHoras(long totalHoras) {
 		this.totalHoras = totalHoras;
 	}
 
