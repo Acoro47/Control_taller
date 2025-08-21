@@ -3,7 +3,8 @@ package com.taller_control.control_taller.services;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.taller_control.control_taller.models.Estado;
@@ -13,8 +14,13 @@ import com.taller_control.control_taller.repositories.ReparacionRepository;
 @Service
 public class ReparacionService {
 	
-	@Autowired
-	private ReparacionRepository reparacionRepo;
+	private final Logger logger = LoggerFactory.getLogger(ReparacionService.class);
+	
+	private final ReparacionRepository reparacionRepo;
+	
+	public ReparacionService(ReparacionRepository repo) {
+		this.reparacionRepo = repo;
+	}
 	
 	public Reparacion abrirReparacion(Reparacion reparacion) {
 		
@@ -37,6 +43,14 @@ public class ReparacionService {
 	
 	public Reparacion cerrarReparacion(Long id) {
 		return null;
+	}
+	
+	public String minutesToHoras(Long minutos) {
+		
+		long horas = minutos / 60;
+		long resto = minutos % 60;
+		
+		return String.format("%02d:%02d", horas, resto);
 	}
 
 }

@@ -22,9 +22,17 @@ public class Reparacion {
 	
 	private LocalDateTime fechaFin;
 	
+	private LocalDateTime fechaPausa;
+	
+	private LocalDateTime fechaReinicio;
+	
+	private Materiales materiales;
+	
+	private Liquidos liquidos;
+	
 	private String descripcion;
 	
-	private long totalHoras;
+	private String totalHoras;
 	
 	@Enumerated(EnumType.STRING)
 	private Estado estado;
@@ -33,7 +41,7 @@ public class Reparacion {
 	private Vehiculo vehiculo;
 
 	public Reparacion(Long id, LocalDateTime fechaInicio, LocalDateTime fechaFin, String descripcion,
-			long totalHoras, Estado estado, Vehiculo vehiculo) {
+			String totalHoras, Estado estado, Vehiculo vehiculo) {
 		super();
 		this.id = id;
 		this.fechaInicio = fechaInicio;
@@ -80,11 +88,11 @@ public class Reparacion {
 		this.descripcion = descripcion;
 	}
 
-	public long getTotalHoras() {
+	public String getTotalHoras() {
 		return totalHoras;
 	}
 
-	public void setTotalHoras(long totalHoras) {
+	public void setTotalHoras(String totalHoras) {
 		this.totalHoras = totalHoras;
 	}
 
