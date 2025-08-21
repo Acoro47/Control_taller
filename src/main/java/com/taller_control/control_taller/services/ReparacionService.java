@@ -1,15 +1,15 @@
 package com.taller_control.control_taller.services;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.taller_control.control_taller.models.Estado;
 import com.taller_control.control_taller.models.Reparacion;
 import com.taller_control.control_taller.repositories.ReparacionRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ReparacionService {
@@ -22,35 +22,35 @@ public class ReparacionService {
 		this.reparacionRepo = repo;
 	}
 	
-	public Reparacion abrirReparacion(Reparacion reparacion) {
-		
-		reparacion.setFechaInicio(LocalDateTime.now());
-		reparacion.setEstado(Estado.EN_REPARACION);
+	public List<Reparacion> buscarPorVehiculo(String matricula){
+		return reparacionRepo.findByVehiculoMatricula(matricula);
+	}
+	
+	public List<Reparacion> buscarPorNombreMaterial(String nombre){
+		return reparacionRepo.findByMaterialNombre(nombre);
+	}
+	
+	public Reparacion guardarReparacion(Reparacion reparacion) {
+		logger.info("Guardando reparación");
 		return reparacionRepo.save(reparacion);
 	}
 	
-	public Reparacion pausarReparacion(Long id) {
-		Reparacion rep = reparacionRepo.findById(id)
-				.orElseThrow(() -> new RuntimeException("Reparación no encontrada"));
-		if (rep.getEstado() == Estado.EN_REPARACION) {
-			long minutos = Duration.between(rep.getFechaInicio(), LocalDateTime.now()).toMinutes();
-			rep.setTotalHoras(rep.getTotalHoras() + minutos);
-			rep.setEstado(Estado.PENDIENTE);
-			return reparacionRepo.save(rep);
-		}
-		throw new RuntimeException("No se puede pausar una reparación que no está activa");
+	public Reparacion buscarPorId(Long id) {
+		logger.info("Buscando reparación con id: {}", id);
+		return reparacionRepo.findById(id)
+				.orElseThrow(()-> new EntityNotFoundException("Reparación no encontrada"));
 	}
 	
-	public Reparacion cerrarReparacion(Long id) {
-		return null;
-	}
-	
-	public String minutesToHoras(Long minutos) {
-		
-		long horas = minutos / 60;
-		long resto = minutos % 60;
-		
-		return String.format("%02d:%02d", horas, resto);
+	public List<Reparacion> listarReparaciones(){
+		return reparacionRepo.findAll();
 	}
 
+	public void eliminarReparacion(Long id) {
+		if(!reparacionRepo.existsById(id)) {
+			throw new EntityNotFoundException("Reparación no se ha podido eliminar porque no se encuentra");
+		}
+		reparacionRepo.deleteById(id);
+	}
+	
+	
 }
