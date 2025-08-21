@@ -34,7 +34,7 @@ public class VehiculoServiceTest {
 		v.setId(1L);
 		v.setMatricula("1234-KWL");
 		v.setMarca("NISSAN");
-		v.setAño(2021);
+		v.setAnio(2021);
 	}
 	
 	// Patrón de nombre de los tests

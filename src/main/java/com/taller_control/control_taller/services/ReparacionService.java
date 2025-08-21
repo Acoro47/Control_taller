@@ -27,7 +27,7 @@ public class ReparacionService {
 	}
 	
 	public List<Reparacion> buscarPorNombreMaterial(String nombre){
-		return reparacionRepo.findByMaterialNombre(nombre);
+		return reparacionRepo.findByMaterialesNombre(nombre);
 	}
 	
 	public Reparacion guardarReparacion(Reparacion reparacion) {

@@ -5,6 +5,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Archivos que no se deberían subir a github
+*/applications.properties
+
 ### STS ###
 .apt_generated
 .classpath

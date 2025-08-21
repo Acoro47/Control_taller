@@ -37,7 +37,7 @@ public class Vehiculo {
 	@Size(max = 10, message = "La matrícula no puede tener mas de 10 carácteres")
 	private String matricula;
 	
-	private Integer año;
+	private Integer anio;
 	
 	private Integer km;
 	
@@ -50,7 +50,7 @@ public class Vehiculo {
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reparacion> reparaciones = new ArrayList<>();
 
-	public Vehiculo(Long id, String modelo, String marca, String matricula, Integer año, Integer km, Integer valorAdquisicion, Integer valorVenta, List<Reparacion> reparaciones) {
+	public Vehiculo(Long id, String modelo, String marca, String matricula, Integer anio, Integer km, Integer valorAdquisicion, Integer valorVenta, List<Reparacion> reparaciones) {
 		
 		this.id = id;
 		this.modelo = modelo;
@@ -59,7 +59,7 @@ public class Vehiculo {
 		this.valorAdquisicion = valorAdquisicion;
 		this.valorVenta = valorVenta;
 		this.reparaciones = reparaciones;
-		this.año = año;
+		this.anio = anio;
 		this.km = km;
 	}
 	
@@ -86,7 +86,7 @@ public class Vehiculo {
 	}
 
 	public void setModelo(String modelo) {
-		this.modelo = modelo;
+		this.modelo = modelo.toUpperCase();
 	}
 
 	public String getMarca() {
@@ -94,7 +94,7 @@ public class Vehiculo {
 	}
 
 	public void setMarca(String marca) {
-		this.marca = marca;
+		this.marca = marca.toUpperCase();;
 	}
 
 	public String getMatricula() {
@@ -105,12 +105,12 @@ public class Vehiculo {
 		this.matricula = matricula;
 	}
 
-	public Integer getAño() {
-		return año;
+	public Integer getAnio() {
+		return anio;
 	}
 
-	public void setAño(Integer año) {
-		this.año = año;
+	public void setAnio(Integer año) {
+		this.anio = año;
 	}
 
 	public Integer getKm() {
