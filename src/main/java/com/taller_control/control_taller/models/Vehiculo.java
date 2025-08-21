@@ -10,8 +10,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.*;
 
 @Entity
+@Table(name = "vehiculos", uniqueConstraints = {
+		@UniqueConstraint(columnNames = "matricula")
+})
 public class Vehiculo {
 	
 	@Id
@@ -19,22 +25,32 @@ public class Vehiculo {
 	private Long id;
 	
 	@Column(nullable = false)
+	@NotBlank(message = "La marca no puede estar vacía")
 	private String modelo;
 	
 	@Column(nullable = false)
+	@NotBlank(message = "La marca no puede estar vacía")
 	private String marca;
 	
 	@Column(nullable = false, unique = true, length = 10)
+	@NotBlank(message = "La matrícula no puede estar vacía")
+	@Size(max = 10, message = "La matrícula no puede tener mas de 10 carácteres")
 	private String matricula;
 	
-	private int valorAdquisicion;
+	private Integer año;
 	
-	private int valorVenta;
+	private Integer km;
+	
+	@Min(value = 0, message = "El valor de compra debe ser positivo")
+	private Integer valorAdquisicion;
+	
+	@Min(value = 0, message = "El valor de venta debe ser positivo")
+	private Integer valorVenta;
 	
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reparacion> reparaciones = new ArrayList<>();
 
-	public Vehiculo(Long id, String modelo, String marca, String matricula, int valorAdquisicion, int valorVenta, List<Reparacion> reparaciones) {
+	public Vehiculo(Long id, String modelo, String marca, String matricula, Integer año, Integer km, Integer valorAdquisicion, Integer valorVenta, List<Reparacion> reparaciones) {
 		
 		this.id = id;
 		this.modelo = modelo;
@@ -43,6 +59,8 @@ public class Vehiculo {
 		this.valorAdquisicion = valorAdquisicion;
 		this.valorVenta = valorVenta;
 		this.reparaciones = reparaciones;
+		this.año = año;
+		this.km = km;
 	}
 	
 	public Vehiculo(Long id, String matricula) {
@@ -87,19 +105,35 @@ public class Vehiculo {
 		this.matricula = matricula;
 	}
 
-	public int getValorAdquisicion() {
+	public Integer getAño() {
+		return año;
+	}
+
+	public void setAño(Integer año) {
+		this.año = año;
+	}
+
+	public Integer getKm() {
+		return km;
+	}
+
+	public void setKm(Integer km) {
+		this.km = km;
+	}
+
+	public Integer getValorAdquisicion() {
 		return valorAdquisicion;
 	}
 
-	public void setValorAdquisicion(int valorAdquisicion) {
+	public void setValorAdquisicion(Integer valorAdquisicion) {
 		this.valorAdquisicion = valorAdquisicion;
 	}
 	
-	public int getValorVenta() {
+	public Integer getValorVenta() {
 		return valorVenta;
 	}
 	
-	public void setValorVenta(int valorVenta) {
+	public void setValorVenta(Integer valorVenta) {
 		this.valorVenta = valorVenta;
 	}
 

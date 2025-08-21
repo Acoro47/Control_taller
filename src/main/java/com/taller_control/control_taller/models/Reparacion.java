@@ -1,53 +1,72 @@
 package com.taller_control.control_taller.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "reparaciones")
 public class Reparacion {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	
+	@Column(columnDefinition = "TIMESTAMP")
 	private LocalDateTime fechaInicio;
 	
+	@Column(columnDefinition = "TIMESTAMP")
 	private LocalDateTime fechaFin;
 	
+	@Column(columnDefinition = "TIMESTAMP")
 	private LocalDateTime fechaPausa;
 	
+	@Column(columnDefinition = "TIMESTAMP")
 	private LocalDateTime fechaReinicio;
-	
-	private Materiales materiales;
-	
-	private Liquidos liquidos;
 	
 	private String descripcion;
 	
-	private String totalHoras;
+	private Long totalHoras;	
+	
+	@OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Material> materiales = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Liquido> liquidos = new ArrayList<>();
 	
 	@Enumerated(EnumType.STRING)
 	private Estado estado;
 	
-	@ManyToOne
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "vehiculo_id")
 	private Vehiculo vehiculo;
 
-	public Reparacion(Long id, LocalDateTime fechaInicio, LocalDateTime fechaFin, String descripcion,
-			String totalHoras, Estado estado, Vehiculo vehiculo) {
+	public Reparacion(Long id, LocalDateTime fechaInicio, LocalDateTime fechaFin, LocalDateTime fechaPausa,
+			LocalDateTime fechaReinicio, String descripcion, Long totalHoras, List<Material> materiales,
+			List<Liquido> liquidos, Estado estado, Vehiculo vehiculo) {
 		super();
 		this.id = id;
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
+		this.fechaPausa = fechaPausa;
+		this.fechaReinicio = fechaReinicio;
 		this.descripcion = descripcion;
 		this.totalHoras = totalHoras;
+		this.materiales = materiales != null ? materiales : new ArrayList<>();
+		this.liquidos = liquidos != null ? liquidos : new ArrayList<>();
 		this.estado = estado;
 		this.vehiculo = vehiculo;
 	}
@@ -80,6 +99,22 @@ public class Reparacion {
 		this.fechaFin = fechaFin;
 	}
 
+	public LocalDateTime getFechaPausa() {
+		return fechaPausa;
+	}
+
+	public void setFechaPausa(LocalDateTime fechaPausa) {
+		this.fechaPausa = fechaPausa;
+	}
+
+	public LocalDateTime getFechaReinicio() {
+		return fechaReinicio;
+	}
+
+	public void setFechaReinicio(LocalDateTime fechaReinicio) {
+		this.fechaReinicio = fechaReinicio;
+	}
+
 	public String getDescripcion() {
 		return descripcion;
 	}
@@ -88,12 +123,28 @@ public class Reparacion {
 		this.descripcion = descripcion;
 	}
 
-	public String getTotalHoras() {
+	public Long getTotalHoras() {
 		return totalHoras;
 	}
 
-	public void setTotalHoras(String totalHoras) {
+	public void setTotalHoras(Long totalHoras) {
 		this.totalHoras = totalHoras;
+	}
+
+	public List<Material> getMateriales() {
+		return materiales;
+	}
+
+	public void setMateriales(List<Material> materiales) {
+		this.materiales = materiales;
+	}
+
+	public List<Liquido> getLiquidos() {
+		return liquidos;
+	}
+
+	public void setLiquidos(List<Liquido> liquidos) {
+		this.liquidos = liquidos;
 	}
 
 	public Estado getEstado() {
@@ -113,5 +164,27 @@ public class Reparacion {
 	}
 	
 	
-
+	// Mantener la integridad de las relaciones Material y Liquido
+	
+	
+	public void addMaterial(Material material) {
+		materiales.add(material);
+		material.setReparacion(this);
+	}
+	
+	public void removeMaterial(Material material) {
+		materiales.remove(material);
+		material.setReparacion(null);
+	}
+	
+	public void addLiquido(Liquido liquido) {
+		liquidos.add(liquido);
+		liquido.setReparacion(this);
+	}
+	
+	public void removeLiquido(Liquido liquido) {
+		liquidos.remove(liquido);
+		liquido.setReparacion(null);
+	}
+	
 }
