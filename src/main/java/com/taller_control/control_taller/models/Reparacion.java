@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,9 +44,11 @@ public class Reparacion {
 	private Long totalHoras;	
 	
 	@OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonBackReference
 	private List<Material> materiales = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonBackReference
 	private List<Liquido> liquidos = new ArrayList<>();
 	
 	@Enumerated(EnumType.STRING)

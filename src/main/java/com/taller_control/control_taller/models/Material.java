@@ -2,6 +2,9 @@ package com.taller_control.control_taller.models;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +31,7 @@ public class Material {
 	
 	@ManyToOne
 	@JoinColumn(name = "reparacion_id")
+	@JsonBackReference
 	private Reparacion reparacion;
 
 	public Material(Long id, String nombre, BigDecimal coste, Reparacion reparacion) {

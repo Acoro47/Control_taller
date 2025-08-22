@@ -1,11 +1,15 @@
 package com.taller_control.control_taller.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.taller_control.control_taller.dtos.ReparacionDTO;
+import com.taller_control.control_taller.dtos.VehiculoDTO;
+import com.taller_control.control_taller.models.Reparacion;
 import com.taller_control.control_taller.models.Vehiculo;
 import com.taller_control.control_taller.repositories.VehiculoRepository;
 
@@ -18,9 +22,11 @@ public class VehiculoService {
 	private final Logger logger = LoggerFactory.getLogger(VehiculoService.class);
 	
 	private final VehiculoRepository repo;
+	private final ReparacionService rService;
 	
-	public VehiculoService(VehiculoRepository rep) {
+	public VehiculoService(VehiculoRepository rep, ReparacionService serv) {
 		this.repo = rep;
+		this.rService = serv;
 	}
 	
 	public Vehiculo guardarVehiculo(Vehiculo v) {
@@ -65,6 +71,33 @@ public class VehiculoService {
 	public List<Vehiculo> buscarPorAnio(Integer anio){
 		logger.info("Buscando vehiculo del año: {}", anio);
 		return repo.findByAnio(anio);
+	}
+	
+	public Vehiculo buscarVehiculoConReparaciones(Long id) {
+		return repo.buscarVehiculoConReparacionesYMateriales(id)
+				.orElseThrow(()-> new EntityNotFoundException("El vehiculo no se ha encontrado"));
+	}
+	
+	
+	public VehiculoDTO mapearEntidadVehiculo(Vehiculo v) {
+		VehiculoDTO vDto = new VehiculoDTO();
+		
+		vDto.setMatricula(v.getMatricula());
+		vDto.setMarca(v.getMarca());
+		vDto.setModelo(v.getModelo());
+		vDto.setAnio(v.getAnio());
+		List<ReparacionDTO> repaDTO = new ArrayList<>();
+		List<Reparacion> reparaciones = v.getReparaciones();
+		
+		reparaciones.forEach(r -> {
+			ReparacionDTO repDTO = rService.mapearEntidadReparacion(r);
+			repaDTO.add(repDTO);
+		});
+		
+		vDto.setReparaciones(repaDTO);
+		
+		
+		return vDto;
 	}
 
 }

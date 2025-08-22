@@ -14,4 +14,7 @@ public interface ReparacionRepository extends JpaRepository<Reparacion, Long>{
 	List<Reparacion> findByVehiculoMatricula(String matricula);
 	// Buscar por materiales
 	List<Reparacion> findByMaterialesNombre(String nombre);
+	
+	// Buscar reparacion con sus materiales
+	
 }
