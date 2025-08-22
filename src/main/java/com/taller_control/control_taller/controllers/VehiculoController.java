@@ -1,5 +1,7 @@
 package com.taller_control.control_taller.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,20 +16,31 @@ import com.taller_control.control_taller.services.VehiculoService;
 @RequestMapping("/api/vehiculos")
 public class VehiculoController {
 	
-	
+	private Logger logger = LoggerFactory.getLogger(VehiculoController.class);
 	private final VehiculoService vService;
 	
 	public VehiculoController(VehiculoService serV) {
 		this.vService = serV;
 	}
 	
+	@GetMapping("/{matricula}")
+	public ResponseEntity<VehiculoDTO> obtenerVehiculosSinDetalles(@PathVariable String matricula){
+		logger.info("Buscando vehiculo con matricula: {}", matricula);
+		Vehiculo v = vService.buscarMatricula(matricula);
+		logger.info("Resultado de la búsqueda: {}", v);
+		if (v == null) return ResponseEntity.notFound().build();
 		
-	@GetMapping("/{id}")
-	public ResponseEntity<VehiculoDTO> obtenerVehiculo(@PathVariable Long id){
+		VehiculoDTO vdto = vService.mapearEntidadVehiculo(v);
+		return ResponseEntity.ok(vdto);
+	}
+	
+		
+	@GetMapping("/{id}/detalles")
+	public ResponseEntity<VehiculoDTO> obtenerVehiculoConDetalles(@PathVariable Long id){
 		Vehiculo v = vService.buscarVehiculoPorId(id);
 		if (v == null) return ResponseEntity.notFound().build();
 		
-		VehiculoDTO vDto = vService.mapearEntidadVehiculo(v);
+		VehiculoDTO vDto = vService.mapearEntidadVehiculoConDetalles(v);
 		return ResponseEntity.ok(vDto);
 	}
 

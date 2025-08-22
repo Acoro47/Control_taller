@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.taller_control.control_taller.dtos.ReparacionDTO;
 import com.taller_control.control_taller.dtos.VehiculoDTO;
@@ -60,7 +62,7 @@ public class VehiculoService {
 	public Vehiculo buscarMatricula(String matricula) {
 		logger.info("Buscando vehiculo con matricula: {}", matricula);
 		return repo.findByMatricula(matricula)
-				.orElseThrow(()-> new EntityNotFoundException("No se ha encontrado el vehiculo"));
+				.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"El vehiculo no se ha encontrado"));
 	}
 	
 	public List<Vehiculo> buscarPorMarca(String marca){
@@ -75,11 +77,31 @@ public class VehiculoService {
 	
 	public Vehiculo buscarVehiculoConReparaciones(Long id) {
 		return repo.buscarVehiculoConReparacionesYMateriales(id)
-				.orElseThrow(()-> new EntityNotFoundException("El vehiculo no se ha encontrado"));
+				.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"El vehiculo no se ha encontrado"));
 	}
 	
 	
 	public VehiculoDTO mapearEntidadVehiculo(Vehiculo v) {
+		VehiculoDTO vDto = new VehiculoDTO();
+		
+		vDto.setMatricula(v.getMatricula());
+		vDto.setMarca(v.getMarca());
+		vDto.setModelo(v.getModelo());
+		vDto.setAnio(v.getAnio());
+		List<ReparacionDTO> repaDTO = new ArrayList<>();
+		List<Reparacion> reparaciones = v.getReparaciones();
+		
+		reparaciones.forEach(r -> {
+			ReparacionDTO repDTO = rService.mapearEntidadReparacion(r);
+			repaDTO.add(repDTO);
+		});
+		
+		vDto.setReparaciones(repaDTO);
+		
+		return vDto;
+	}
+	
+	public VehiculoDTO mapearEntidadVehiculoConDetalles(Vehiculo v) {
 		VehiculoDTO vDto = new VehiculoDTO();
 		
 		vDto.setMatricula(v.getMatricula());
