@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.taller_control.control_taller.models.Roles;
@@ -18,9 +18,9 @@ import com.taller_control.control_taller.repositories.UsuarioRepository;
 public class UsuarioService implements UserDetailsService{
 	
 	private final UsuarioRepository repo;
-	private final BCryptPasswordEncoder encoder;
+	private final PasswordEncoder encoder;
 
-	public UsuarioService(UsuarioRepository repo, BCryptPasswordEncoder passEncoder) {
+	public UsuarioService(UsuarioRepository repo, PasswordEncoder passEncoder) {
 		super();
 		this.repo = repo;
 		this.encoder = passEncoder;

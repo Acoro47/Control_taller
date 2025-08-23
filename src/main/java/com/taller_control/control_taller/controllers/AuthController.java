@@ -38,7 +38,7 @@ public class AuthController {
 		}
 	}
 	
-	@GetMapping("/api/secure/hello")
+	@GetMapping("/secure/hello")
 	public ResponseEntity<String> helloSecure(){
 		return ResponseEntity.ok("Hola Abel, tu token es válido");
 	}

@@ -20,13 +20,11 @@ import com.taller_control.control_taller.services.UsuarioService;
 @EnableWebSecurity
 public class SecurityConfig {
 	
-	private final UsuarioService userService;
 	private final JwtAuthenticationFilter jwtFilter;
 	
-	public SecurityConfig(JwtAuthenticationFilter jwtFilter, UsuarioService uServ) {
+	public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
 		super();
 		this.jwtFilter = jwtFilter;
-		this.userService = uServ;
 	}
 	
 	@Bean
@@ -35,8 +33,8 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	public DaoAuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userService);
+	public DaoAuthenticationProvider authenticationProvider(UsuarioService uService) {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(uService);
 		provider.setPasswordEncoder(passwordEncoder());
 		return provider;
 	}
@@ -44,13 +42,13 @@ public class SecurityConfig {
 
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity http,DaoAuthenticationProvider authProvider) throws Exception {
 		
 		http
 		.csrf(csrf -> csrf.disable())
 		.sessionManagement(session -> session
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authenticationProvider(authenticationProvider())
+				.authenticationProvider(authProvider)
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/api/auth/**").permitAll()
 						.anyRequest().authenticated()
