@@ -1,7 +1,10 @@
 package com.taller_control.control_taller.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,11 +20,12 @@ import com.taller_control.control_taller.repositories.UsuarioRepository;
 @Service
 public class UsuarioService implements UserDetailsService{
 	
+	private static Logger logger = LoggerFactory.getLogger(UsuarioService.class);
+	
 	private final UsuarioRepository repo;
 	private final PasswordEncoder encoder;
 
 	public UsuarioService(UsuarioRepository repo, PasswordEncoder passEncoder) {
-		super();
 		this.repo = repo;
 		this.encoder = passEncoder;
 	}
@@ -32,6 +36,8 @@ public class UsuarioService implements UserDetailsService{
 		usuario.setPassword(passEncode);
 		usuario.setRol(Roles.ROLE_CLASSIC);
 		usuario.setEnabled(true);
+		usuario.setCreatedAt(LocalDateTime.now());
+		
 		repo.save(usuario);
 		return usuario;
 	}
@@ -55,5 +61,14 @@ public class UsuarioService implements UserDetailsService{
 						new SimpleGrantedAuthority(u.getRol().name())
 						)
 				);
+	}
+	
+	public boolean validarCredenciales(String username, String password) {
+		logger.info("Usuario: {}, Contraseña: {}", username, password);
+					
+		
+		return repo.findByUsername(username)
+				.map(user -> encoder.matches(password, user.getPassword()))
+				.orElse(false);
 	}
 }

@@ -26,7 +26,7 @@ public class Usuario {
 	private String password;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "roles", nullable = false, length = 7)
+	@Column(name = "roles", nullable = false, length = 15)
 	private Roles rol;
 	
 	@Column(nullable = false)

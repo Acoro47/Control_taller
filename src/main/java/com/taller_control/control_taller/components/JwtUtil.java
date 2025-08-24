@@ -1,15 +1,21 @@
 package com.taller_control.control_taller.components;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 
 @Component
 public class JwtUtil {
@@ -38,6 +44,15 @@ public class JwtUtil {
 		
 	}
 	
+	public String extractUsername(String token) {
+		return extractAllClaims(token).getSubject();
+	}
+	
+	public boolean isTokenValid(String token, UserDetails userDetails) {
+		String username = extractUsername(token);
+		return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+	}
+	
 	public boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 	}
@@ -54,6 +69,37 @@ public class JwtUtil {
 				.getBody();
 		return claimsResolver.apply(claims);
 				
+	}
+	
+	private Claims extractAllClaims(String token) {
+		try {
+			return Jwts.parserBuilder()
+					.setSigningKey(key)
+					.build()
+					.parseClaimsJws(token)
+					.getBody();
+		}
+		catch (ExpiredJwtException e) {
+			System.out.println("Token expirado:" + e.getMessage());
+			throw e;
+		}
+		catch (UnsupportedJwtException  e) {
+			System.out.println("Token no soportado:" + e.getMessage());
+			throw e;
+		}
+		catch (MalformedJwtException e) {
+	        // Token mal formado
+	        System.out.println("⚠️ Token mal formado: " + e.getMessage());
+	        throw e;
+	    } catch (SecurityException e) {
+	        // Fallo en la firma
+	        System.out.println("⚠️ Firma inválida: " + e.getMessage());
+	        throw e;
+	    } catch (IllegalArgumentException e) {
+	        // Token vacío o null
+	        System.out.println("⚠️ Token ilegal: " + e.getMessage());
+	        throw e;
+	    }
 	}
 
 }
