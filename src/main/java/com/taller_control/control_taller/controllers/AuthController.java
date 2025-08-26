@@ -1,6 +1,7 @@
 package com.taller_control.control_taller.controllers;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.taller_control.control_taller.components.JwtUtil;
 import com.taller_control.control_taller.dtos.LoginRequestDTO;
-import com.taller_control.control_taller.models.Roles;
+import com.taller_control.control_taller.dtos.RegisterRequestDTO;
+import com.taller_control.control_taller.models.TokenResponse;
 import com.taller_control.control_taller.models.Usuario;
-import com.taller_control.control_taller.services.AuthService;
 import com.taller_control.control_taller.services.UsuarioService;
 
 @RestController
@@ -38,7 +39,11 @@ public class AuthController {
 	}
 	
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody LoginRequestDTO dto){
+	public ResponseEntity<?> register(@RequestBody RegisterRequestDTO dto){
+		if (!dto.getPassword().equals(dto.getConfirmarPass())) {
+			throw new IllegalArgumentException("Las contraseñas no coinciden");
+			
+		}
 		Usuario u = new Usuario();
 		u.setUsername(dto.getUsuario());
 		u.setPassword(dto.getPassword());
@@ -49,7 +54,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest){
+	public ResponseEntity<TokenResponse> login(@RequestBody LoginRequestDTO loginRequest){
 		logger.info("Usuario: {}, Contraseña: {}", loginRequest.getUsuario(), loginRequest.getPassword());
 		
 		boolean valido = userService.validarCredenciales(loginRequest.getUsuario(), loginRequest.getPassword());
@@ -57,15 +62,20 @@ public class AuthController {
 		
 		if (valido) {
 			String token = jwtUtil.generateToken(loginRequest.getUsuario());
-			return ResponseEntity.ok(token);
+			return ResponseEntity.ok(new TokenResponse(
+					userService.loadUserByUsername(loginRequest.getUsuario()).getUsername(),
+					"ok",
+					token));
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 	}
 	
 	@GetMapping("/secure/hello")
-	public ResponseEntity<String> helloSecure(){
-		return ResponseEntity.ok("Hola Abel, tu token es válido");
+	public ResponseEntity<Map<String,String>> helloSecure(){
+		Map<String, String> resp = new HashMap<>();
+		resp.put("message", "Hola Abel, tu token es válido");
+		return ResponseEntity.ok(resp);
 	}
 
 }
