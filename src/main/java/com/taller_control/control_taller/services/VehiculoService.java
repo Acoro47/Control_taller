@@ -81,7 +81,7 @@ public class VehiculoService {
 	}
 	
 	
-	public VehiculoDTO mapearEntidadVehiculo(Vehiculo v) {
+	public VehiculoDTO mapearEntidadVehiculoADTO(Vehiculo v) {
 		VehiculoDTO vDto = new VehiculoDTO();
 		
 		vDto.setMatricula(v.getMatricula());
@@ -91,17 +91,20 @@ public class VehiculoService {
 		List<ReparacionDTO> repaDTO = new ArrayList<>();
 		List<Reparacion> reparaciones = v.getReparaciones();
 		
-		reparaciones.forEach(r -> {
-			ReparacionDTO repDTO = rService.mapearEntidadReparacion(r);
-			repaDTO.add(repDTO);
-		});
+		if (!reparaciones.isEmpty()) {
+			reparaciones.forEach(r -> {
+				ReparacionDTO repDTO = rService.mapearEntidadReparacion(r);
+				repaDTO.add(repDTO);
+			});
+			
+			vDto.setReparaciones(repaDTO);
+		}
 		
-		vDto.setReparaciones(repaDTO);
 		
 		return vDto;
 	}
 	
-	public VehiculoDTO mapearEntidadVehiculoConDetalles(Vehiculo v) {
+	public VehiculoDTO mapearEntidadVehiculoConDetallesADTO(Vehiculo v) {
 		VehiculoDTO vDto = new VehiculoDTO();
 		
 		vDto.setMatricula(v.getMatricula());

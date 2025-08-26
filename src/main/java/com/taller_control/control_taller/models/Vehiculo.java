@@ -39,7 +39,7 @@ public class Vehiculo {
 	
 	private Integer anio;
 	
-	private Integer km;
+	private Float km;
 	
 	@Min(value = 0, message = "El valor de compra debe ser positivo")
 	private Integer valorAdquisicion;
@@ -50,7 +50,7 @@ public class Vehiculo {
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reparacion> reparaciones = new ArrayList<>();
 
-	public Vehiculo(Long id, String modelo, String marca, String matricula, Integer anio, Integer km, Integer valorAdquisicion, Integer valorVenta, List<Reparacion> reparaciones) {
+	public Vehiculo(Long id, String modelo, String marca, String matricula, Integer anio, Float km, Integer valorAdquisicion, Integer valorVenta, List<Reparacion> reparaciones) {
 		
 		this.id = id;
 		this.modelo = modelo;
@@ -113,11 +113,11 @@ public class Vehiculo {
 		this.anio = año;
 	}
 
-	public Integer getKm() {
+	public Float getKm() {
 		return km;
 	}
 
-	public void setKm(Integer km) {
+	public void setKm(Float km) {
 		this.km = km;
 	}
 

@@ -2,9 +2,12 @@ package com.taller_control.control_taller.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +26,27 @@ public class VehiculoController {
 		this.vService = serV;
 	}
 	
+	@PostMapping("/registrar")
+	public ResponseEntity<VehiculoDTO> registrarCoche(
+			@RequestBody VehiculoDTO vDto) {
+		logger.info("Registrando vehiculo nuevo: {}", vDto.getMatricula());
+		
+		Vehiculo v = new Vehiculo();
+		v.setAnio(vDto.getAnio());
+		v.setMarca(vDto.getMarca());
+		v.setModelo(vDto.getModelo());
+		v.setMatricula(vDto.getMatricula());
+		v.setKm(vDto.getKm());
+		
+		Vehiculo vGuardado = vService.guardarVehiculo(v);
+		VehiculoDTO vehiculoRespuesta = vService.mapearEntidadVehiculoADTO(vGuardado);
+		
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(vehiculoRespuesta);
+		
+	}
+	
 	@GetMapping("/{matricula}")
 	public ResponseEntity<VehiculoDTO> obtenerVehiculosSinDetalles(@PathVariable String matricula){
 		logger.info("Buscando vehiculo con matricula: {}", matricula);
@@ -30,7 +54,7 @@ public class VehiculoController {
 		logger.info("Resultado de la búsqueda: {}", v);
 		if (v == null) return ResponseEntity.notFound().build();
 		
-		VehiculoDTO vdto = vService.mapearEntidadVehiculo(v);
+		VehiculoDTO vdto = vService.mapearEntidadVehiculoADTO(v);
 		return ResponseEntity.ok(vdto);
 	}
 	
@@ -40,7 +64,7 @@ public class VehiculoController {
 		Vehiculo v = vService.buscarVehiculoPorId(id);
 		if (v == null) return ResponseEntity.notFound().build();
 		
-		VehiculoDTO vDto = vService.mapearEntidadVehiculoConDetalles(v);
+		VehiculoDTO vDto = vService.mapearEntidadVehiculoConDetallesADTO(v);
 		return ResponseEntity.ok(vDto);
 	}
 
