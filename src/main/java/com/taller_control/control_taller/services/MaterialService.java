@@ -20,9 +20,19 @@ public class MaterialService {
 		MaterialDTO mat = new MaterialDTO();
 		
 		mat.setNombre(m.getNombre());
-		mat.setCoste(m.getCoste());
+		mat.setCoste(m.getCoste().toString());
 		
 		return mat;
+	}
+	
+	public Material mapearDtoAMaterial(MaterialDTO dto) {
+		
+		Material m = new Material();
+		
+		m.setNombre(dto.getNombre());	
+		m.setCoste(dto.getCoste() != null ? Float.parseFloat(dto.getCoste()) : 0f);
+		
+		return m;
 	}
 	
 }

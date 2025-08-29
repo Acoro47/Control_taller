@@ -7,18 +7,23 @@ public class VehiculoDTO {
 	private String matricula;
 	private String marca;
 	private String modelo;
-	private Integer anio;
-	private Float km;
+	private String anio;
+	private String km;
+	private String valorCompra;
+	private String valorVenta;
 	private List<ReparacionDTO> reparaciones;
 	
-	public VehiculoDTO(String matricula, String marca, String modelo, Integer anio,Float km, List<ReparacionDTO> repa) {
+	public VehiculoDTO(String matricula, String marca, String modelo, String anio,String km,String valorAdquisicion, String valorVenta, List<ReparacionDTO> repa) {
 		super();
 		this.matricula = matricula;
 		this.marca = marca;
 		this.modelo = modelo;
 		this.anio = anio;
 		this.km = km;
+		this.valorCompra = valorAdquisicion;
+		this.valorVenta = valorVenta;
 		this.reparaciones = repa;
+		
 	}
 
 	public VehiculoDTO() {
@@ -49,12 +54,28 @@ public class VehiculoDTO {
 		this.modelo = modelo;
 	}
 
-	public Integer getAnio() {
+	public String getAnio() {
 		return anio;
 	}
 
-	public void setAnio(Integer anio) {
+	public void setAnio(String anio) {
 		this.anio = anio;
+	}
+	
+	public String getValorCompra() {
+		return valorCompra;
+	}
+
+	public void setValorCompra(String valorAdquisicion) {
+		this.valorCompra = valorAdquisicion;
+	}
+	
+	public String getValorVenta() {
+		return valorVenta;
+	}
+	
+	public void setValorVenta(String valorVenta) {
+		this.valorVenta = valorVenta;
 	}
 
 	public List<ReparacionDTO> getReparaciones() {
@@ -65,11 +86,11 @@ public class VehiculoDTO {
 		this.reparaciones = reparaciones;
 	}
 
-	public Float getKm() {
+	public String getKm() {
 		return km;
 	}
 
-	public void setKm(Float km) {
+	public void setKm(String km) {
 		this.km = km;
 	}
 	

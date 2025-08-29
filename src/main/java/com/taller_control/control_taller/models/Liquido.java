@@ -1,9 +1,8 @@
 package com.taller_control.control_taller.models;
 
-import java.math.BigDecimal;
+
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,17 +25,17 @@ public class Liquido {
 	private String nombre;
 	
 	@Positive(message = "La cantidad debe ser mayor que cero")
-	private BigDecimal cantidad;
+	private Float cantidad;
 	
 	@PositiveOrZero(message = "El precio por litro no puede ser negativo")
-	private BigDecimal precioLitro;
+	private Float precioLitro;
 	
 	@ManyToOne
 	@JoinColumn(name = "reparacion_id")
 	@JsonBackReference
 	private Reparacion reparacion;
 
-	public Liquido(Long id, String nombre, BigDecimal cantidad, BigDecimal precioLitro, Reparacion reparacion) {
+	public Liquido(Long id, String nombre, Float cantidad, Float precioLitro, Reparacion reparacion) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -65,19 +64,19 @@ public class Liquido {
 		this.nombre = nombre;
 	}
 
-	public BigDecimal getCantidad() {
+	public Float getCantidad() {
 		return cantidad;
 	}
 
-	public void setCantidad(BigDecimal cantidad) {
+	public void setCantidad(Float cantidad) {
 		this.cantidad = cantidad;
 	}
 
-	public BigDecimal getPrecioLitro() {
+	public Float getPrecioLitro() {
 		return precioLitro;
 	}
 
-	public void setPrecioLitro(BigDecimal precioLitro) {
+	public void setPrecioLitro(Float precioLitro) {
 		this.precioLitro = precioLitro;
 	}
 

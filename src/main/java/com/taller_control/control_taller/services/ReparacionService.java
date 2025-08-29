@@ -1,5 +1,6 @@
 package com.taller_control.control_taller.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.taller_control.control_taller.dtos.LiquidoDTO;
 import com.taller_control.control_taller.dtos.MaterialDTO;
 import com.taller_control.control_taller.dtos.ReparacionDTO;
+import com.taller_control.control_taller.models.Liquido;
+import com.taller_control.control_taller.models.Material;
 import com.taller_control.control_taller.models.Reparacion;
 import com.taller_control.control_taller.repositories.ReparacionRepository;
 
@@ -67,8 +70,8 @@ public class ReparacionService {
 	public ReparacionDTO mapearEntidadReparacion(Reparacion r) {
 		ReparacionDTO rDto = new ReparacionDTO();
 		rDto.setDescripcion(r.getDescripcion());
-		rDto.setFechaFin(r.getFechaFin());
-		rDto.setFechaInicio(r.getFechaInicio());
+		rDto.setFechaFin(r.getFechaFin().toString());
+		rDto.setFechaInicio(r.getFechaInicio().toString());
 		List<MaterialDTO> matDtos = r.getMateriales().stream()
 				.map(mServ::mapearEntidadMaterial)
 				.collect(Collectors.toList());
@@ -83,5 +86,46 @@ public class ReparacionService {
 		
 	}
 	
+	public Reparacion mapearDTOAReparacion(ReparacionDTO dto) {
+		Reparacion r = new Reparacion();
+		r.setDescripcion(dto.getDescripcion());
+		r.setFechaFin(dto.getFechaFin() != null ? LocalDateTime.parse(dto.getFechaFin()) : null);
+		r.setFechaInicio(dto.getFechaInicio() != null ? LocalDateTime.parse(dto.getFechaInicio()) : null);
+		
+		List<Material> mat = dto.getMateriales().stream()
+				.map(mServ::mapearDtoAMaterial)
+				.collect(Collectors.toList());
+		
+		List<Liquido> liq = dto.getLiquidos().stream()
+				.map(lServ::mapearDtoALiquido)
+				.collect(Collectors.toList());
+		
+		r.setMateriales(mat);
+		r.setLiquidos(liq);
+		
+		return r;
+	}
+	
+	public ReparacionDTO mapearDtoAReparacion(Reparacion rep) {
+		ReparacionDTO dto = new ReparacionDTO();
+		
+		dto.setFechaInicio(rep.getFechaInicio().toString());
+		dto.setFechaFin(rep.getFechaFin().toString());
+		dto.setFechaPausa(rep.getFechaPausa().toString());
+		dto.setFechaReinicio(rep.getFechaReinicio().toString());
+		dto.setDescripcion(rep.getDescripcion());
+		
+		List<MaterialDTO> mDto = rep.getMateriales().stream()
+				.map(mServ::mapearEntidadMaterial)
+				.collect(Collectors.toList());
+		
+		List<LiquidoDTO> lDto = rep.getLiquidos().stream()
+				.map(lServ::mapearEntidadLiquido)
+				.collect(Collectors.toList());
+		dto.setLiquidos(lDto);
+		dto.setMateriales(mDto);
+		
+		return dto;
+	}
 	
 }

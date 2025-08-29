@@ -1,7 +1,11 @@
 package com.taller_control.control_taller.models;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,7 +29,7 @@ public class Vehiculo {
 	private Long id;
 	
 	@Column(nullable = false)
-	@NotBlank(message = "La marca no puede estar vacía")
+	@NotBlank(message = "El modelo no puede estar vacía")
 	private String modelo;
 	
 	@Column(nullable = false)
@@ -37,30 +41,34 @@ public class Vehiculo {
 	@Size(max = 10, message = "La matrícula no puede tener mas de 10 carácteres")
 	private String matricula;
 	
-	private Integer anio;
+	@Column(nullable = false)
+	private Integer anio = Year.now().getValue();
 	
-	private Float km;
+	@Column(nullable = false)
+	private Float km = 0f;
 	
 	@Min(value = 0, message = "El valor de compra debe ser positivo")
-	private Integer valorAdquisicion;
+	private Float valorCompra = 0f;
 	
 	@Min(value = 0, message = "El valor de venta debe ser positivo")
-	private Integer valorVenta;
+	private Float valorVenta = 0f;
 	
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonBackReference
 	private List<Reparacion> reparaciones = new ArrayList<>();
 
-	public Vehiculo(Long id, String modelo, String marca, String matricula, Integer anio, Float km, Integer valorAdquisicion, Integer valorVenta, List<Reparacion> reparaciones) {
+	public Vehiculo(Long id, String modelo, String marca, String matricula, Integer anio, Float km, Float valorAdquisicion, Float valorVenta, List<Reparacion> reparaciones) {
 		
 		this.id = id;
 		this.modelo = modelo;
 		this.marca = marca;
 		this.matricula = matricula;
-		this.valorAdquisicion = valorAdquisicion;
+		this.valorCompra = valorAdquisicion;
 		this.valorVenta = valorVenta;
-		this.reparaciones = reparaciones;
 		this.anio = anio;
 		this.km = km;
+		this.reparaciones = reparaciones;
+	
 	}
 	
 	public Vehiculo(Long id, String matricula) {
@@ -94,7 +102,7 @@ public class Vehiculo {
 	}
 
 	public void setMarca(String marca) {
-		this.marca = marca.toUpperCase();;
+		this.marca = marca.toUpperCase();
 	}
 
 	public String getMatricula() {
@@ -102,15 +110,19 @@ public class Vehiculo {
 	}
 
 	public void setMatricula(String matricula) {
-		this.matricula = matricula;
+		this.matricula = matricula.toUpperCase();
 	}
 
 	public Integer getAnio() {
+		
 		return anio;
 	}
 
 	public void setAnio(Integer año) {
-		this.anio = año;
+		if (año != null) {
+			this.anio = año;
+		}
+		
 	}
 
 	public Float getKm() {
@@ -118,23 +130,31 @@ public class Vehiculo {
 	}
 
 	public void setKm(Float km) {
-		this.km = km;
+		if (km != null) {
+			this.km = km;
+		}
+		
 	}
 
-	public Integer getValorAdquisicion() {
-		return valorAdquisicion;
+	public Float getValorCompra() {
+		return valorCompra;
 	}
 
-	public void setValorAdquisicion(Integer valorAdquisicion) {
-		this.valorAdquisicion = valorAdquisicion;
+	public void setValorCompra(Float valorAdquisicion) {
+		if (valorAdquisicion != null) {
+			this.valorCompra = valorAdquisicion;
+		}
+		
 	}
 	
-	public Integer getValorVenta() {
+	public Float getValorVenta() {
 		return valorVenta;
 	}
 	
-	public void setValorVenta(Integer valorVenta) {
-		this.valorVenta = valorVenta;
+	public void setValorVenta(Float valorVenta) {
+		if (valorVenta != null) {
+			this.valorVenta = valorVenta;
+		}
 	}
 
 	public List<Reparacion> getReparaciones() {

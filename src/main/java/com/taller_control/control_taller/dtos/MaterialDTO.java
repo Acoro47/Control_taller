@@ -1,12 +1,12 @@
 package com.taller_control.control_taller.dtos;
 
-import java.math.BigDecimal;
 
 public class MaterialDTO {
 	
 	private String nombre;
-	private BigDecimal coste;
-	public MaterialDTO(String nombre, BigDecimal coste) {
+	private String coste;
+	
+	public MaterialDTO(String nombre, String coste) {
 		super();
 		this.nombre = nombre;
 		this.coste = coste;
@@ -20,10 +20,10 @@ public class MaterialDTO {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public BigDecimal getCoste() {
+	public String getCoste() {
 		return coste;
 	}
-	public void setCoste(BigDecimal coste) {
+	public void setCoste(String coste) {
 		this.coste = coste;
 	}
 	

@@ -1,6 +1,6 @@
 package com.taller_control.control_taller.models;
 
-import java.math.BigDecimal;
+
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,14 +27,14 @@ public class Material {
 	private String nombre;
 	
 	@PositiveOrZero(message = "El coste no puede ser negativo")
-	private BigDecimal coste;
+	private Float coste;
 	
 	@ManyToOne
 	@JoinColumn(name = "reparacion_id")
 	@JsonBackReference
 	private Reparacion reparacion;
 
-	public Material(Long id, String nombre, BigDecimal coste, Reparacion reparacion) {
+	public Material(Long id, String nombre, Float coste, Reparacion reparacion) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -62,11 +62,11 @@ public class Material {
 		this.nombre = nombre;
 	}
 
-	public BigDecimal getCoste() {
+	public Float getCoste() {
 		return coste;
 	}
 
-	public void setCoste(BigDecimal coste) {
+	public void setCoste(Float coste) {
 		this.coste = coste;
 	}
 

@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "reparaciones")
@@ -56,6 +57,7 @@ public class Reparacion {
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "vehiculo_id")
+	@NotNull(message = "El vehiculo es obligatorio")
 	private Vehiculo vehiculo;
 
 	public Reparacion(Long id, LocalDateTime fechaInicio, LocalDateTime fechaFin, LocalDateTime fechaPausa,

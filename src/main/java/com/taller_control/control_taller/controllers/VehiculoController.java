@@ -1,5 +1,6 @@
 package com.taller_control.control_taller.controllers;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -31,27 +32,21 @@ public class VehiculoController {
 			@RequestBody VehiculoDTO vDto) {
 		logger.info("Registrando vehiculo nuevo: {}", vDto.getMatricula());
 		
-		Vehiculo v = new Vehiculo();
-		v.setAnio(vDto.getAnio());
-		v.setMarca(vDto.getMarca());
-		v.setModelo(vDto.getModelo());
-		v.setMatricula(vDto.getMatricula());
-		v.setKm(vDto.getKm());
+		Vehiculo v = vService.crearVehiculoDesdeDTO(vDto);
 		
-		Vehiculo vGuardado = vService.guardarVehiculo(v);
-		VehiculoDTO vehiculoRespuesta = vService.mapearEntidadVehiculoADTO(vGuardado);
-		
+		vService.guardarVehiculo(v);
+				
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
-				.body(vehiculoRespuesta);
+				.body(vDto);
 		
 	}
+	
 	
 	@GetMapping("/{matricula}")
 	public ResponseEntity<VehiculoDTO> obtenerVehiculosSinDetalles(@PathVariable String matricula){
 		logger.info("Buscando vehiculo con matricula: {}", matricula);
-		Vehiculo v = vService.buscarMatricula(matricula);
-		logger.info("Resultado de la búsqueda: {}", v);
+		Vehiculo v = vService.buscarPorMatricula(matricula.toUpperCase());
 		if (v == null) return ResponseEntity.notFound().build();
 		
 		VehiculoDTO vdto = vService.mapearEntidadVehiculoADTO(v);

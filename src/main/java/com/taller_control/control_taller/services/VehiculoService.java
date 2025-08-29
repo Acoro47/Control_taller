@@ -1,5 +1,6 @@
 package com.taller_control.control_taller.services;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,8 +60,7 @@ public class VehiculoService {
 		repo.deleteById(id);
 	}
 	
-	public Vehiculo buscarMatricula(String matricula) {
-		logger.info("Buscando vehiculo con matricula: {}", matricula);
+	public Vehiculo buscarPorMatricula(String matricula) {
 		return repo.findByMatricula(matricula)
 				.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"El vehiculo no se ha encontrado"));
 	}
@@ -85,21 +85,31 @@ public class VehiculoService {
 		VehiculoDTO vDto = new VehiculoDTO();
 		
 		vDto.setMatricula(v.getMatricula());
-		vDto.setMarca(v.getMarca());
-		vDto.setModelo(v.getModelo());
-		vDto.setAnio(v.getAnio());
-		List<ReparacionDTO> repaDTO = new ArrayList<>();
-		List<Reparacion> reparaciones = v.getReparaciones();
 		
+		vDto.setMarca(v.getMarca());
+		
+		vDto.setModelo(v.getModelo());
+		
+		vDto.setAnio(v.getAnio().toString());
+		
+		vDto.setKm(v.getKm().toString());
+		
+		vDto.setValorCompra(v.getValorCompra().toString());
+		
+		vDto.setValorVenta(v.getValorVenta().toString());
+		
+		List<ReparacionDTO> repaDTO = new ArrayList<>();
+		logger.info("Reparaciones: {}", repaDTO);
+		List<Reparacion> reparaciones = v.getReparaciones() != null ? v.getReparaciones() : new ArrayList<Reparacion>();
+		logger.info("Reparaciones: {}", repaDTO);
 		if (!reparaciones.isEmpty()) {
 			reparaciones.forEach(r -> {
 				ReparacionDTO repDTO = rService.mapearEntidadReparacion(r);
 				repaDTO.add(repDTO);
 			});
 			
-			vDto.setReparaciones(repaDTO);
 		}
-		
+		vDto.setReparaciones(repaDTO);	
 		
 		return vDto;
 	}
@@ -110,7 +120,11 @@ public class VehiculoService {
 		vDto.setMatricula(v.getMatricula());
 		vDto.setMarca(v.getMarca());
 		vDto.setModelo(v.getModelo());
-		vDto.setAnio(v.getAnio());
+		vDto.setAnio(v.getAnio().toString());
+		vDto.setKm(v.getKm().toString());
+		vDto.setValorCompra(v.getValorCompra().toString());
+		vDto.setValorVenta(v.getValorVenta().toString());
+		
 		List<ReparacionDTO> repaDTO = new ArrayList<>();
 		List<Reparacion> reparaciones = v.getReparaciones();
 		
@@ -123,6 +137,57 @@ public class VehiculoService {
 		
 		
 		return vDto;
+	}
+	
+	public Vehiculo mapearDTOAVehiculo(VehiculoDTO dto) {
+		Vehiculo v = new Vehiculo();
+		
+		v.setMatricula(dto.getMatricula());
+		v.setMarca(dto.getMarca());
+		v.setModelo(dto.getModelo());
+		try {
+			v.setAnio(dto.getAnio() != null ? Integer.parseInt(dto.getAnio()) : Year.now().getValue());
+		} catch(NumberFormatException e) {
+			v.setAnio(Year.now().getValue());
+		}
+		
+		v.setKm(dto.getKm() != null ? Float.parseFloat(dto.getKm()) : 0f);
+		v.setValorCompra(dto.getValorCompra() != null ? Float.parseFloat(dto.getValorCompra()) : 0f);
+		v.setValorVenta(dto.getValorVenta() != null ? Float.parseFloat(dto.getValorVenta()) : 0f);
+		
+		List<Reparacion> repa = new ArrayList<>();
+		List<ReparacionDTO> repaDto = dto.getReparaciones() != null ? dto.getReparaciones() : new ArrayList<ReparacionDTO>();
+		
+		if (!repaDto.isEmpty()) {
+			repaDto.forEach(r -> {
+				Reparacion rep = rService.mapearDTOAReparacion(r);
+				rep.setVehiculo(v);
+				repa.add(rep);
+			});
+			v.setReparaciones(repa);
+		}
+		
+		return v;
+	}
+	
+	public Vehiculo crearVehiculoDesdeDTO(VehiculoDTO dto) {
+		
+		Vehiculo v = new Vehiculo();
+		
+		v.setMatricula(dto.getMatricula());
+		v.setMarca(dto.getMarca());
+		v.setModelo(dto.getModelo());
+		try {
+			v.setAnio(dto.getAnio() != null ? Integer.parseInt(dto.getAnio()) : Year.now().getValue());
+		} catch(NumberFormatException e) {
+			v.setAnio(Year.now().getValue());
+		}
+		v.setKm(dto.getKm() != null ? Float.parseFloat(dto.getKm()) : 0f);
+		v.setValorCompra(dto.getValorCompra() != "" ? Float.parseFloat(dto.getValorCompra()) : 0f);
+		v.setValorVenta(dto.getValorVenta() != "" ? Float.parseFloat(dto.getValorVenta()) : 0f);
+		v.setReparaciones(new ArrayList<>());
+		
+		return v;
 	}
 
 }
