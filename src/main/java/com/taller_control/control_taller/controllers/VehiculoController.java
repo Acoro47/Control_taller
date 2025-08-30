@@ -1,6 +1,9 @@
 package com.taller_control.control_taller.controllers;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -63,4 +66,17 @@ public class VehiculoController {
 		return ResponseEntity.ok(vDto);
 	}
 
+	
+	@GetMapping("/all")
+	public ResponseEntity<List<VehiculoDTO>> listarVehiculos() {
+		List<VehiculoDTO> dtos = new ArrayList<>();
+		List<Vehiculo> vehiculos = new ArrayList<>();
+		vehiculos = vService.listar();
+		vehiculos.forEach(v -> {
+			var dto = vService.mapearEntidadVehiculoADTO(v);
+			dtos.add(dto);
+		});
+		
+		return ResponseEntity.ok(dtos);
+	}
 }
