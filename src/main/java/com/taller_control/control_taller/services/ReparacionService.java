@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import com.taller_control.control_taller.dtos.LiquidoDTO;
 import com.taller_control.control_taller.dtos.MaterialDTO;
 import com.taller_control.control_taller.dtos.ReparacionDTO;
+import com.taller_control.control_taller.models.Estado;
 import com.taller_control.control_taller.models.Liquido;
 import com.taller_control.control_taller.models.Material;
 import com.taller_control.control_taller.models.Reparacion;
+import com.taller_control.control_taller.models.Vehiculo;
 import com.taller_control.control_taller.repositories.ReparacionRepository;
 import com.taller_control.control_taller.repositories.VehiculoRepository;
 
@@ -25,13 +27,13 @@ public class ReparacionService {
 	private final Logger logger = LoggerFactory.getLogger(ReparacionService.class);
 	
 	private final ReparacionRepository reparacionRepo;
-	private final VehiculoRepository vRepo;
+	private final VehiculoService vServ;
 	private final MaterialService mServ;
 	private final LiquidoService lServ;
 	
-	public ReparacionService(ReparacionRepository repo,VehiculoRepository repoV, MaterialService serv, LiquidoService lser) {
+	public ReparacionService(ReparacionRepository repo, VehiculoService vServ, MaterialService serv, LiquidoService lser) {
 		this.reparacionRepo = repo;
-		this.vRepo = repoV;
+		this.vServ = vServ;
 		this.mServ = serv;
 		this.lServ = lser;
 	}
@@ -44,9 +46,11 @@ public class ReparacionService {
 		return reparacionRepo.findByMaterialesNombre(nombre);
 	}
 	
-	public Reparacion guardarReparacion(ReparacionDTO reparacion) {
+	public ReparacionDTO guardarReparacion(ReparacionDTO reparacion) {
 		logger.info("Guardando reparación");
-		return reparacionRepo.save(mapearDTOAReparacion(reparacion));
+		Reparacion r = reparacionRepo.save(mapearDTOAReparacion(reparacion));
+		
+		return mapearEntidadReparacion(r);
 	}
 	
 	public Reparacion buscarPorId(Long id) {
@@ -72,6 +76,7 @@ public class ReparacionService {
 	
 	public ReparacionDTO mapearEntidadReparacion(Reparacion r) {
 		ReparacionDTO rDto = new ReparacionDTO();
+		rDto.setId(r.getId().toString());
 		rDto.setDescripcion(r.getDescripcion());
 		rDto.setFechaFin(r.getFechaFin().toString());
 		rDto.setFechaInicio(r.getFechaInicio().toString());
@@ -109,7 +114,7 @@ public class ReparacionService {
 		return r;
 	}
 	
-	public ReparacionDTO mapearDtoAReparacion(Reparacion rep) {
+	public ReparacionDTO mapearReparacionADTO(Reparacion rep) {
 		ReparacionDTO dto = new ReparacionDTO();
 		
 		dto.setFechaInicio(rep.getFechaInicio().toString());
@@ -131,13 +136,21 @@ public class ReparacionService {
 		return dto;
 	}
 	
-	public Reparacion crearReparacionDesdeDTO(ReparacionDTO dto) {
+	public ReparacionDTO crearReparacionDesdeDTO(ReparacionDTO dto) {
+		
+		Vehiculo v = vServ.buscarPorMatricula(dto.getMatricula());
+		if (v == null) {
+			throw new NullPointerException("El vehiculo no existe");
+		}
 		
 		Reparacion r = new Reparacion();
 		
 		r.setDescripcion(dto.getDescripcion());
+		r.setEstado(Estado.PENDIENTE);
+		r.setVehiculo(v);
+		r.setTotalHoras(0L);
 		
-		return null;
+		return mapearReparacionADTO(r);
 	}
 	
 }

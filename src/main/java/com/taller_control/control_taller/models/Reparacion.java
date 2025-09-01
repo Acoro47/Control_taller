@@ -59,10 +59,12 @@ public class Reparacion {
 	@JoinColumn(name = "vehiculo_id")
 	@NotNull(message = "El vehiculo es obligatorio")
 	private Vehiculo vehiculo;
+	
+	private LocalDateTime fechaCreacion;
 
 	public Reparacion(Long id, LocalDateTime fechaInicio, LocalDateTime fechaFin, LocalDateTime fechaPausa,
 			LocalDateTime fechaReinicio, String descripcion, Long totalHoras, List<Material> materiales,
-			List<Liquido> liquidos, Estado estado, Vehiculo vehiculo) {
+			List<Liquido> liquidos, Estado estado, Vehiculo vehiculo, LocalDateTime createAt) {
 		super();
 		this.id = id;
 		this.fechaInicio = fechaInicio;
@@ -75,6 +77,7 @@ public class Reparacion {
 		this.liquidos = liquidos != null ? liquidos : new ArrayList<>();
 		this.estado = estado;
 		this.vehiculo = vehiculo;
+		this.fechaCreacion = createAt;
 	}
 
 	public Reparacion() {
@@ -169,10 +172,20 @@ public class Reparacion {
 		this.vehiculo = vehiculo;
 	}
 	
+	public LocalDateTime getFechaCreacion() {
+		return fechaCreacion = LocalDateTime.now();
+	}
+	
 	
 	// Mantener la integridad de las relaciones Material y Liquido
 	
 	
+	
+
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
 	public void addMaterial(Material material) {
 		materiales.add(material);
 		material.setReparacion(this);

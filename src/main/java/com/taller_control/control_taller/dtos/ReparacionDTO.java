@@ -4,30 +4,62 @@ import java.util.List;
 
 public class ReparacionDTO {
 	
+	private String id;
+	private String matricula;
 	private String fechaInicio;
 	private String fechaFin;
 	private String fechaPausa;
 	private String fechaReinicio;
 	private String descripcion;
 	private String estado;
+	private String fechaCreacion;
 	private List<MaterialDTO> materiales;
 	private List<LiquidoDTO> liquidos;
 	
-	public ReparacionDTO(String fechaInicio, String fechaFin, String fechaPausa, String fechaReinicio ,String descripcion,String estado,
+	public ReparacionDTO(String id, String matricula, String fechaInicio, String fechaFin, String fechaPausa, String fechaReinicio ,String descripcion,String estado, String createdAt,
 			List<MaterialDTO> materiales, List<LiquidoDTO> liquidos) {
 		super();
+		this.id = id;
+		this.matricula = matricula;
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
 		this.fechaPausa = fechaPausa;
 		this.fechaReinicio = fechaReinicio;
 		this.descripcion = descripcion;
 		this.estado = estado;
+		this.fechaCreacion = createdAt;
 		this.materiales = materiales;
 		this.liquidos = liquidos;
 	}
 
 	public ReparacionDTO() {
 		super();
+	}
+	
+	
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(String fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public String getMatricula() {
+		return matricula;
+	}
+
+	public void setMatricula(String matricula) {
+		this.matricula = matricula;
 	}
 
 	public String getFechaInicio() {
