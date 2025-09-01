@@ -28,6 +28,7 @@ public class SecurityConfig {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authProvider)
 				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/error").permitAll()
 						.requestMatchers("/api/auth/**").permitAll()
 						.anyRequest().authenticated()
 						)

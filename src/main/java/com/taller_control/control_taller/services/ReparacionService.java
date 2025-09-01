@@ -15,6 +15,7 @@ import com.taller_control.control_taller.models.Liquido;
 import com.taller_control.control_taller.models.Material;
 import com.taller_control.control_taller.models.Reparacion;
 import com.taller_control.control_taller.repositories.ReparacionRepository;
+import com.taller_control.control_taller.repositories.VehiculoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -24,11 +25,13 @@ public class ReparacionService {
 	private final Logger logger = LoggerFactory.getLogger(ReparacionService.class);
 	
 	private final ReparacionRepository reparacionRepo;
+	private final VehiculoRepository vRepo;
 	private final MaterialService mServ;
 	private final LiquidoService lServ;
 	
-	public ReparacionService(ReparacionRepository repo, MaterialService serv, LiquidoService lser) {
+	public ReparacionService(ReparacionRepository repo,VehiculoRepository repoV, MaterialService serv, LiquidoService lser) {
 		this.reparacionRepo = repo;
+		this.vRepo = repoV;
 		this.mServ = serv;
 		this.lServ = lser;
 	}
@@ -41,9 +44,9 @@ public class ReparacionService {
 		return reparacionRepo.findByMaterialesNombre(nombre);
 	}
 	
-	public Reparacion guardarReparacion(Reparacion reparacion) {
+	public Reparacion guardarReparacion(ReparacionDTO reparacion) {
 		logger.info("Guardando reparación");
-		return reparacionRepo.save(reparacion);
+		return reparacionRepo.save(mapearDTOAReparacion(reparacion));
 	}
 	
 	public Reparacion buscarPorId(Long id) {
@@ -126,6 +129,15 @@ public class ReparacionService {
 		dto.setMateriales(mDto);
 		
 		return dto;
+	}
+	
+	public Reparacion crearReparacionDesdeDTO(ReparacionDTO dto) {
+		
+		Reparacion r = new Reparacion();
+		
+		r.setDescripcion(dto.getDescripcion());
+		
+		return null;
 	}
 	
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.taller_control.control_taller.dtos.VehiculoDTO;
 import com.taller_control.control_taller.models.Vehiculo;
@@ -51,7 +52,8 @@ public class VehiculoController {
 	public ResponseEntity<VehiculoDTO> obtenerVehiculosSinDetalles(@PathVariable String matricula){
 		logger.info("Buscando vehiculo con matricula: {}", matricula);
 		Vehiculo v = vService.buscarPorMatricula(matricula.toUpperCase());
-		if (v == null) return ResponseEntity.notFound().build();
+		logger.info("El vehiculo es: {}", v);
+		if (v == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El vehiculo no se ha encontrado");
 		
 		VehiculoDTO vdto = vService.mapearEntidadVehiculoADTO(v);
 		return ResponseEntity.ok(vdto);
@@ -84,6 +86,7 @@ public class VehiculoController {
 	@GetMapping("/totalVehiculos")
 	public ResponseEntity<String> obtenerTotalVehiculos() {
 		String total = vService.buscarTotalVehiculos();
+		logger.info("El total de vehiculos es: {}", total);
 		
 		return ResponseEntity.ok(total);
 	}

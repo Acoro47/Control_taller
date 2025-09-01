@@ -9,10 +9,11 @@ public class ReparacionDTO {
 	private String fechaPausa;
 	private String fechaReinicio;
 	private String descripcion;
+	private String estado;
 	private List<MaterialDTO> materiales;
 	private List<LiquidoDTO> liquidos;
 	
-	public ReparacionDTO(String fechaInicio, String fechaFin, String fechaPausa, String fechaReinicio ,String descripcion,
+	public ReparacionDTO(String fechaInicio, String fechaFin, String fechaPausa, String fechaReinicio ,String descripcion,String estado,
 			List<MaterialDTO> materiales, List<LiquidoDTO> liquidos) {
 		super();
 		this.fechaInicio = fechaInicio;
@@ -20,6 +21,7 @@ public class ReparacionDTO {
 		this.fechaPausa = fechaPausa;
 		this.fechaReinicio = fechaReinicio;
 		this.descripcion = descripcion;
+		this.estado = estado;
 		this.materiales = materiales;
 		this.liquidos = liquidos;
 	}
@@ -66,6 +68,14 @@ public class ReparacionDTO {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 
 	public List<MaterialDTO> getMateriales() {

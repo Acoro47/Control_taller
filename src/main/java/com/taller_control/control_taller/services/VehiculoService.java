@@ -178,13 +178,13 @@ public class VehiculoService {
 		v.setMarca(dto.getMarca());
 		v.setModelo(dto.getModelo());
 		try {
-			v.setAnio(dto.getAnio() != null ? Integer.parseInt(dto.getAnio()) : Year.now().getValue());
+			v.setAnio(dto.getAnio() != null && !dto.getAnio().isEmpty() ? Integer.parseInt(dto.getAnio()) : Year.now().getValue());
 		} catch(NumberFormatException e) {
 			v.setAnio(Year.now().getValue());
 		}
-		v.setKm(dto.getKm() != null ? Float.parseFloat(dto.getKm()) : 0f);
-		v.setValorCompra(dto.getValorCompra() != "" ? Float.parseFloat(dto.getValorCompra()) : 0f);
-		v.setValorVenta(dto.getValorVenta() != "" ? Float.parseFloat(dto.getValorVenta()) : 0f);
+		v.setKm(parseFloatOrDefault(dto.getKm(), 0f));
+		v.setValorCompra(parseFloatOrDefault(dto.getValorCompra(), 0f));
+		v.setValorVenta(parseFloatOrDefault(dto.getValorVenta(), 0f));
 		v.setReparaciones(new ArrayList<>());
 		
 		return v;
@@ -192,9 +192,18 @@ public class VehiculoService {
 	
 	public String buscarTotalVehiculos() {
 		
-		String total = String.valueOf(repo.findAll());
+		List<Vehiculo>vehiculosExistentes = repo.findAll();
+		String total = String.valueOf(vehiculosExistentes.size());
 		
 		return total;
+	}
+	
+	private Float parseFloatOrDefault(String s, float defaultValue) {
+		try {
+			return s != null && !s.isEmpty() ? Float.parseFloat(s) : defaultValue;
+		} catch (NumberFormatException e) {
+			return defaultValue;
+		}
 	}
 
 }

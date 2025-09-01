@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taller_control.control_taller.dtos.ReparacionDTO;
 import com.taller_control.control_taller.models.Reparacion;
 import com.taller_control.control_taller.services.ReparacionService;
 
@@ -28,9 +31,15 @@ public class ReparacionController {
 	}
 	
 	@PostMapping
-	public Reparacion crear(@RequestBody Reparacion repa) {
+	public ResponseEntity<ReparacionDTO> registrarReparacion(
+			@RequestBody ReparacionDTO dto) {
 		logger.info("Guardando reparación desde el ReparacionController");
-		return service.guardarReparacion(repa);
+		Reparacion r = service.crearReparacionDesdeDTO(dto);
+		service.guardarReparacion(dto);
+		
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(dto);
 	}
 	
 	@GetMapping("/{id}")
