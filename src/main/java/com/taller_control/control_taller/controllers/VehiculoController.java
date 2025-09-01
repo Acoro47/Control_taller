@@ -30,6 +30,7 @@ public class VehiculoController {
 		this.vService = serV;
 	}
 	
+	
 	@PostMapping("/registrar")
 	public ResponseEntity<VehiculoDTO> registrarCoche(
 			@RequestBody VehiculoDTO vDto) {
@@ -78,5 +79,12 @@ public class VehiculoController {
 		});
 		
 		return ResponseEntity.ok(dtos);
+	}
+	
+	@GetMapping("/totalVehiculos")
+	public ResponseEntity<String> obtenerTotalVehiculos() {
+		String total = vService.buscarTotalVehiculos();
+		
+		return ResponseEntity.ok(total);
 	}
 }

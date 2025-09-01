@@ -189,5 +189,12 @@ public class VehiculoService {
 		
 		return v;
 	}
+	
+	public String buscarTotalVehiculos() {
+		
+		String total = String.valueOf(repo.findAll());
+		
+		return total;
+	}
 
 }
