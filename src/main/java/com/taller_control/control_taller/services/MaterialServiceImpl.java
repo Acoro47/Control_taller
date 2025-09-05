@@ -39,8 +39,9 @@ public class MaterialServiceImpl implements MaterialService{
 
 	@Override
 	public List<Material> listarMateriales() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Material> materiales = matRepo.findAll();
+		
+		return materiales;
 	}
 	
 }
