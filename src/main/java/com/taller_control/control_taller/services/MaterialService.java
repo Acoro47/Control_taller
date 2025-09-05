@@ -1,38 +1,10 @@
 package com.taller_control.control_taller.services;
 
-import org.springframework.stereotype.Service;
+import java.util.List;
 
-import com.taller_control.control_taller.dtos.MaterialDTO;
 import com.taller_control.control_taller.models.Material;
-import com.taller_control.control_taller.repositories.MaterialRepository;
 
-@Service
-public class MaterialService {
+public interface MaterialService {
 
-	private final MaterialRepository matRepo;
-	
-	public MaterialService(MaterialRepository repo) {
-		this.matRepo = repo;
-	}
-	
-	public MaterialDTO mapearEntidadMaterial(Material m) {
-		
-		MaterialDTO mat = new MaterialDTO();
-		
-		mat.setNombre(m.getNombre());
-		mat.setCoste(m.getCoste().toString());
-		
-		return mat;
-	}
-	
-	public Material mapearDtoAMaterial(MaterialDTO dto) {
-		
-		Material m = new Material();
-		
-		m.setNombre(dto.getNombre());	
-		m.setCoste(dto.getCoste() != null ? Float.parseFloat(dto.getCoste()) : 0f);
-		
-		return m;
-	}
-	
+	List<Material> listarMateriales();
 }

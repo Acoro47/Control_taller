@@ -19,7 +19,7 @@ import com.taller_control.control_taller.dtos.LoginRequestDTO;
 import com.taller_control.control_taller.dtos.RegisterRequestDTO;
 import com.taller_control.control_taller.models.TokenResponse;
 import com.taller_control.control_taller.models.Usuario;
-import com.taller_control.control_taller.services.UsuarioService;
+import com.taller_control.control_taller.services.UsuarioServiceImpl;
 
 @RestController
 @RequestMapping("/api/auth/")
@@ -30,9 +30,9 @@ public class AuthController {
 	//private final AuthService auth;
 	private final JwtUtil jwtUtil;
 	
-	private final UsuarioService userService;
+	private final UsuarioServiceImpl userService;
 
-	public AuthController(UsuarioService auth, JwtUtil jwtUtil) {
+	public AuthController(UsuarioServiceImpl auth, JwtUtil jwtUtil) {
 		super();
 		this.userService = auth;
 		this.jwtUtil = jwtUtil;

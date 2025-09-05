@@ -18,14 +18,14 @@ import com.taller_control.control_taller.models.Usuario;
 import com.taller_control.control_taller.repositories.UsuarioRepository;
 
 @Service
-public class UsuarioService implements UserDetailsService{
+public class UsuarioServiceImpl implements UserDetailsService{
 	
-	private static Logger logger = LoggerFactory.getLogger(UsuarioService.class);
+	private static Logger logger = LoggerFactory.getLogger(UsuarioServiceImpl.class);
 	
 	private final UsuarioRepository repo;
 	private final PasswordEncoder encoder;
 
-	public UsuarioService(UsuarioRepository repo, PasswordEncoder passEncoder) {
+	public UsuarioServiceImpl(UsuarioRepository repo, PasswordEncoder passEncoder) {
 		this.repo = repo;
 		this.encoder = passEncoder;
 	}

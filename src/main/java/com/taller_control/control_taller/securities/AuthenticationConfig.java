@@ -8,13 +8,13 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.taller_control.control_taller.services.UsuarioService;
+import com.taller_control.control_taller.services.UsuarioServiceImpl;
 
 @Configuration
 public class AuthenticationConfig {
 	
 	@Bean
-	public DaoAuthenticationProvider authenticationProvider(UsuarioService uService, BCryptPasswordEncoder passwordEncoder) {
+	public DaoAuthenticationProvider authenticationProvider(UsuarioServiceImpl uService, BCryptPasswordEncoder passwordEncoder) {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(uService);
 		provider.setPasswordEncoder(passwordEncoder);
 		return provider;

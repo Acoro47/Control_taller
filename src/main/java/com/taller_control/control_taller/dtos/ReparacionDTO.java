@@ -15,9 +15,10 @@ public class ReparacionDTO {
 	private String fechaCreacion;
 	private List<MaterialDTO> materiales;
 	private List<LiquidoDTO> liquidos;
+	private VehiculoDTO vDto;
 	
 	public ReparacionDTO(String id, String matricula, String fechaInicio, String fechaFin, String fechaPausa, String fechaReinicio ,String descripcion,String estado, String createdAt,
-			List<MaterialDTO> materiales, List<LiquidoDTO> liquidos) {
+			List<MaterialDTO> materiales, List<LiquidoDTO> liquidos, VehiculoDTO dtoV) {
 		super();
 		this.id = id;
 		this.matricula = matricula;
@@ -30,6 +31,7 @@ public class ReparacionDTO {
 		this.fechaCreacion = createdAt;
 		this.materiales = materiales;
 		this.liquidos = liquidos;
+		this.vDto = dtoV;
 	}
 
 	public ReparacionDTO() {
@@ -124,6 +126,14 @@ public class ReparacionDTO {
 
 	public void setLiquidos(List<LiquidoDTO> liquidos) {
 		this.liquidos = liquidos;
+	}
+
+	public VehiculoDTO getVdto() {
+		return vDto;
+	}
+
+	public void setVdto(VehiculoDTO vDto) {
+		this.vDto = vDto;
 	}
 	
 	

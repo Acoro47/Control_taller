@@ -18,16 +18,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.taller_control.control_taller.dtos.VehiculoDTO;
 import com.taller_control.control_taller.models.Vehiculo;
-import com.taller_control.control_taller.services.VehiculoService;
+import com.taller_control.control_taller.services.VehiculoServiceImpl;
 
 @RestController
 @RequestMapping("/api/vehiculos")
 public class VehiculoController {
 	
 	private Logger logger = LoggerFactory.getLogger(VehiculoController.class);
-	private final VehiculoService vService;
+	private final VehiculoServiceImpl vService;
 	
-	public VehiculoController(VehiculoService serV) {
+	public VehiculoController(VehiculoServiceImpl serV) {
 		this.vService = serV;
 	}
 	
@@ -51,12 +51,11 @@ public class VehiculoController {
 	@GetMapping("/{matricula}")
 	public ResponseEntity<VehiculoDTO> obtenerVehiculosSinDetalles(@PathVariable String matricula){
 		logger.info("Buscando vehiculo con matricula: {}", matricula);
-		Vehiculo v = vService.buscarPorMatricula(matricula.toUpperCase());
-		logger.info("El vehiculo es: {}", v);
-		if (v == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El vehiculo no se ha encontrado");
+		VehiculoDTO vDto = vService.buscarPorMatricula(matricula.toUpperCase());
+		logger.info("El vehiculo es: {}", vDto);
+		if (vDto == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El vehiculo no se ha encontrado");
 		
-		VehiculoDTO vdto = vService.mapearEntidadVehiculoADTO(v);
-		return ResponseEntity.ok(vdto);
+		return ResponseEntity.ok(vDto);
 	}
 	
 		

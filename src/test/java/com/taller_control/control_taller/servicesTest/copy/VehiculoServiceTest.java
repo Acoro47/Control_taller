@@ -15,7 +15,7 @@ import static org.mockito.Mockito.any;
 
 import com.taller_control.control_taller.models.Vehiculo;
 import com.taller_control.control_taller.repositories.VehiculoRepository;
-import com.taller_control.control_taller.services.VehiculoService;
+import com.taller_control.control_taller.services.VehiculoServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class VehiculoServiceTest {
@@ -24,7 +24,7 @@ public class VehiculoServiceTest {
 	private VehiculoRepository repo;
 	
 	@InjectMocks
-	private VehiculoService service;
+	private VehiculoServiceImpl service;
 	
 	private Vehiculo v;
 	
