@@ -21,6 +21,9 @@ public interface VehiculoRepository extends JpaRepository<Vehiculo, Long>{
 	// Buscar por año
 	List<Vehiculo> findByAnio(Integer año);
 	
+	//Buscar por filtro de matricula
+	List<Vehiculo> findByMatriculaContainingIgnoreCase(String query);
+	
 	// Buscar vehiculo concreto con sus reparaciones
 	@Query("""
 			SELECT DISTINCT v

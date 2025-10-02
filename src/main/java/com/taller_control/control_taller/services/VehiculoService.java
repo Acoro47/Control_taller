@@ -17,5 +17,6 @@ public interface VehiculoService {
 	public Vehiculo buscarVehiculoConReparaciones(Long id);
 	public Vehiculo crearVehiculoDesdeDTO(VehiculoDTO dto);
 	public String buscarTotalVehiculos();
+	public List<VehiculoDTO> buscarPorMatriculaParcial(String query);
 
 }

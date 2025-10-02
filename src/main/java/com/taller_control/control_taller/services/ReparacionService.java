@@ -7,7 +7,7 @@ import com.taller_control.control_taller.models.Reparacion;
 
 public interface ReparacionService {
 
-	public List<Reparacion> buscarPorVehiculo(String matricula);
+	public List<ReparacionDTO> buscarPorVehiculo(String matricula);
 	
 	public List<Reparacion> buscarPorNombreMaterial(String nombre);
 	

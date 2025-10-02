@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -88,5 +89,14 @@ public class VehiculoController {
 		logger.info("El total de vehiculos es: {}", total);
 		
 		return ResponseEntity.ok(total);
+	}
+	
+	@GetMapping("/buscar")
+	public ResponseEntity<List<VehiculoDTO>> buscarVehiculosPorMatriculaFiltrada(
+			@RequestParam String query) {
+		logger.info("Buscando vehiculos mediante filtros de matricula {}", query);
+		List<VehiculoDTO> resultado = vService.buscarPorMatriculaParcial(query);
+		return ResponseEntity.ok(resultado);
+		
 	}
 }

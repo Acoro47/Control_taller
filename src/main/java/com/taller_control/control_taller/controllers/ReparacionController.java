@@ -60,7 +60,12 @@ public class ReparacionController {
 		return rService.buscarPorId(id);
 	}
 	
-	@GetMapping
+	@GetMapping("/{matricula}")
+	public List<ReparacionDTO> listarReparacionesPorMatricula(@PathVariable String matricula) {
+		return rService.buscarPorVehiculo(matricula);
+	}
+	
+	@GetMapping("/all")
 	public List<Reparacion> listar(){
 		return rService.listarReparaciones();
 	}

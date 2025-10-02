@@ -2,6 +2,7 @@ package com.taller_control.control_taller.services;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +40,17 @@ public class ReparacionServiceImpl implements ReparacionService{
 	}
 	
 	@Override
-	public List<Reparacion> buscarPorVehiculo(String matricula){
-		return reparacionRepo.findByVehiculoMatricula(matricula);
+	public List<ReparacionDTO> buscarPorVehiculo(String matricula){
+		List<Reparacion> reparaciones = reparacionRepo.findByVehiculoMatricula(matricula);
+		List<ReparacionDTO> listaDto = new ArrayList<>();
+		
+		reparaciones.forEach(r -> {
+			ReparacionDTO dto = mapearReparacionADTO(r);
+			listaDto.add(dto);
+		});
+		
+		return listaDto;
+		
 	}
 	
 	@Override

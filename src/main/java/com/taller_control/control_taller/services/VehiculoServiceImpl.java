@@ -223,4 +223,14 @@ public class VehiculoServiceImpl implements VehiculoService{
 		}
 	}
 
+	@Override
+	public List<VehiculoDTO> buscarPorMatriculaParcial(String query) {
+		
+		List<Vehiculo> vehiculos = repo.findByMatriculaContainingIgnoreCase(query);
+		List<VehiculoDTO> dtos = new ArrayList<>();
+		vehiculos.forEach(v -> dtos.add(mapearEntidadVehiculoADTO(v)));
+		
+		return dtos;
+	}
+
 }
