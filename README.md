@@ -30,7 +30,7 @@ Controlar el tiempo de las reparaciones de un taller
 ### Nos descargamos la aplicación.
 ### En la pantalla de inicio podemos solicitar el registro.
 
-[Podemos entrar en la aplicación o registrarnos](img/login.JPG)
+![Podemos entrar en la aplicación o registrarnos](img/login.JPG)
 
 
 ### Una vez entramos en la página podemos registrar los vehiculos y sus reparaciones.
