@@ -27,10 +27,14 @@ Controlar el tiempo de las reparaciones de un taller
 ---
 
 ## ▶️ Cómo ejecutar el proyecto
-
+Nos descargamos la aplicación.
+En la pantalla de inicio podemos solicitar el registro.
 ### Una vez entramos en la página podemos registrar los vehiculos y sus reparaciones.
 
-![Registramos un vehiculo])
+
+![Llegamos al Dashboard con un pequeño resumen de los datos que tenemos guardados.](img/Dashboard.jpg)
+
+![Registramos un vehiculo](img/registro_vehiculo.jpg)
 
 ### En los informes podemos encontrar filtros de búsqueda por fecha
 
