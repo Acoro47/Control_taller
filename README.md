@@ -34,7 +34,7 @@ En la pantalla de inicio podemos solicitar el registro.
 
 ![Llegamos al Dashboard con un pequeño resumen de los datos que tenemos guardados.](img/Dashboard.jpg)
 
-![Registramos un vehiculo](img/registro_vehiculo.jpg)
+![Registramos un vehiculo](img/registro_vehiculo.JPG)
 
 ### En los informes podemos encontrar filtros de búsqueda por fecha
 
