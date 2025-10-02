@@ -31,12 +31,12 @@ Nos descargamos la aplicación.
 En la pantalla de inicio podemos solicitar el registro.
 ### Una vez entramos en la página podemos registrar los vehiculos y sus reparaciones.
 
-
-![Llegamos al Dashboard con un pequeño resumen de los datos que tenemos guardados.](img/Dashboard.jpg)
+### En el dashboard principal tenemos el menú de navegación y el botón para salir.
+![Llegamos al Dashboard con un pequeño resumen de los datos que tenemos guardados.](img/Dashboard.JPG)
 
 ![Registramos un vehiculo](img/registro_vehiculo.JPG)
 
-### En los informes podemos encontrar filtros de búsqueda por fecha
+
 
 ![Podemos ver desde la fecha que queramos](img/informes.jpg)
 
