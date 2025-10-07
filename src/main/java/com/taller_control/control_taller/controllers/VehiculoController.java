@@ -53,8 +53,7 @@ public class VehiculoController {
 	public ResponseEntity<VehiculoDTO> obtenerVehiculosSinDetalles(@PathVariable String matricula){
 		logger.info("Buscando vehiculo con matricula: {}", matricula);
 		VehiculoDTO vDto = vService.buscarPorMatricula(matricula.toUpperCase());
-		logger.info("El vehiculo es: {}", vDto);
-		if (vDto == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El vehiculo no se ha encontrado");
+		logger.info("El vehiculo es: {}", vDto.getId());
 		
 		return ResponseEntity.ok(vDto);
 	}
@@ -76,7 +75,10 @@ public class VehiculoController {
 		List<Vehiculo> vehiculos = new ArrayList<>();
 		vehiculos = vService.listar();
 		vehiculos.forEach(v -> {
+			logger.info("Controlador Vehiculo: {}",v.getId());
+			logger.info("Controlador Vehiculo: {}",v.getMatricula());
 			var dto = vService.mapearEntidadVehiculoADTO(v);
+			logger.info("Controlador VehiculoDTO: {}",dto.getMatricula());
 			dtos.add(dto);
 		});
 		

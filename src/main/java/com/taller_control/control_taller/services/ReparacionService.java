@@ -3,6 +3,7 @@ package com.taller_control.control_taller.services;
 import java.util.List;
 
 import com.taller_control.control_taller.dtos.ReparacionDTO;
+import com.taller_control.control_taller.dtos.VehiculoDTO;
 import com.taller_control.control_taller.models.Reparacion;
 
 public interface ReparacionService {
@@ -11,7 +12,7 @@ public interface ReparacionService {
 	
 	public List<Reparacion> buscarPorNombreMaterial(String nombre);
 	
-	public ReparacionDTO guardarReparacion(ReparacionDTO reparacion);
+	public ReparacionDTO guardarReparacion(ReparacionDTO reparacion, VehiculoDTO vDto);
 	
 	public Reparacion buscarPorId(Long id);
 	

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,25 +36,25 @@ public class Reparacion {
 	private LocalDateTime fechaFin;
 	
 	@Column(columnDefinition = "TIMESTAMP")
-	private LocalDateTime fechaPausa;
+	private LocalDateTime fechaInicioPausa;
 	
 	@Column(columnDefinition = "TIMESTAMP")
-	private LocalDateTime fechaReinicio;
+	private LocalDateTime fechaFinPausa;
 	
 	private String descripcion;
 	
 	private Long totalHoras;	
 	
 	@OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonBackReference
+	@JsonManagedReference
 	private List<Material> materiales = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonBackReference
+	@JsonManagedReference
 	private List<Liquido> liquidos = new ArrayList<>();
 	
 	@Enumerated(EnumType.STRING)
-	private Estado estado;
+	private Estado estado = Estado.PENDIENTE;
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "vehiculo_id")
@@ -62,15 +63,15 @@ public class Reparacion {
 	
 	private LocalDateTime fechaCreacion;
 
-	public Reparacion(Long id, LocalDateTime fechaInicio, LocalDateTime fechaFin, LocalDateTime fechaPausa,
-			LocalDateTime fechaReinicio, String descripcion, Long totalHoras, List<Material> materiales,
+	public Reparacion(Long id, LocalDateTime fechaInicio, LocalDateTime fechaFin, LocalDateTime fechaInicioPausa,
+			LocalDateTime fechaFinPausa, String descripcion, Long totalHoras, List<Material> materiales,
 			List<Liquido> liquidos, Estado estado, Vehiculo vehiculo, LocalDateTime createAt) {
 		super();
 		this.id = id;
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
-		this.fechaPausa = fechaPausa;
-		this.fechaReinicio = fechaReinicio;
+		this.fechaInicioPausa = fechaInicioPausa;
+		this.fechaFinPausa = fechaFinPausa;
 		this.descripcion = descripcion;
 		this.totalHoras = totalHoras;
 		this.materiales = materiales != null ? materiales : new ArrayList<>();
@@ -108,20 +109,20 @@ public class Reparacion {
 		this.fechaFin = fechaFin;
 	}
 
-	public LocalDateTime getFechaPausa() {
-		return fechaPausa;
+	public LocalDateTime getFechaInicioPausa() {
+		return fechaInicioPausa;
 	}
 
-	public void setFechaPausa(LocalDateTime fechaPausa) {
-		this.fechaPausa = fechaPausa;
+	public void setFechaInicioPausa(LocalDateTime fechaPausa) {
+		this.fechaInicioPausa = fechaPausa;
 	}
 
-	public LocalDateTime getFechaReinicio() {
-		return fechaReinicio;
+	public LocalDateTime getFechaFinPausa() {
+		return fechaFinPausa;
 	}
 
-	public void setFechaReinicio(LocalDateTime fechaReinicio) {
-		this.fechaReinicio = fechaReinicio;
+	public void setFechaFinPausa(LocalDateTime fechaReinicio) {
+		this.fechaFinPausa = fechaReinicio;
 	}
 
 	public String getDescripcion() {
@@ -173,18 +174,20 @@ public class Reparacion {
 	}
 	
 	public LocalDateTime getFechaCreacion() {
-		return fechaCreacion = LocalDateTime.now();
+		return fechaCreacion;
 	}
 	
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	
+		
 	
 	// Mantener la integridad de las relaciones Material y Liquido
 	
 	
 	
-
-	public void setFechaCreacion(LocalDateTime fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
 
 	public void addMaterial(Material material) {
 		materiales.add(material);

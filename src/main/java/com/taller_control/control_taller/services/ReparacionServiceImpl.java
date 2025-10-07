@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -14,13 +15,11 @@ import com.taller_control.control_taller.dtos.LiquidoDTO;
 import com.taller_control.control_taller.dtos.MaterialDTO;
 import com.taller_control.control_taller.dtos.ReparacionDTO;
 import com.taller_control.control_taller.dtos.VehiculoDTO;
-import com.taller_control.control_taller.models.Estado;
 import com.taller_control.control_taller.models.Liquido;
 import com.taller_control.control_taller.models.Material;
 import com.taller_control.control_taller.models.Reparacion;
 import com.taller_control.control_taller.models.Vehiculo;
 import com.taller_control.control_taller.repositories.ReparacionRepository;
-import com.taller_control.control_taller.repositories.VehiculoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -43,9 +42,11 @@ public class ReparacionServiceImpl implements ReparacionService{
 	public List<ReparacionDTO> buscarPorVehiculo(String matricula){
 		List<Reparacion> reparaciones = reparacionRepo.findByVehiculoMatricula(matricula);
 		List<ReparacionDTO> listaDto = new ArrayList<>();
+		VehiculoDTO vDto = new VehiculoDTO();
+		vDto.setMatricula(matricula);
 		
 		reparaciones.forEach(r -> {
-			ReparacionDTO dto = mapearReparacionADTO(r);
+			ReparacionDTO dto = mapearReparacionADTO(r,vDto);
 			listaDto.add(dto);
 		});
 		
@@ -59,11 +60,11 @@ public class ReparacionServiceImpl implements ReparacionService{
 	}
 	
 	@Override
-	public ReparacionDTO guardarReparacion(ReparacionDTO reparacion) {
+	public ReparacionDTO guardarReparacion(ReparacionDTO reparacion, VehiculoDTO vDto) {
 		logger.info("Guardando reparación");
-		Reparacion r = reparacionRepo.save(mapearDTOAReparacion(reparacion));
+		Reparacion r = reparacionRepo.save(mapearDTOAReparacion(reparacion, vDto));
 		
-		return mapearEntidadReparacion(r);
+		return mapearReparacionADTO(r,vDto);
 	}
 	
 	@Override
@@ -91,12 +92,52 @@ public class ReparacionServiceImpl implements ReparacionService{
 		return reparacionRepo.findByVehiculoMatricula(matricula);
 	}
 	
-	public ReparacionDTO mapearEntidadReparacion(Reparacion r) {
+	public Reparacion mapearDTOAReparacion(ReparacionDTO repaDto, VehiculoDTO vehiculoDTO) {
+		Reparacion r = new Reparacion();
+		
+		r.setDescripcion(repaDto.getDescripcion());
+		r.setFechaFin(parseStringToLocalDateTime(repaDto.getFechaFin()));
+		r.setFechaInicio(parseStringToLocalDateTime(repaDto.getFechaInicio()));
+		r.setFechaInicioPausa(parseStringToLocalDateTime(repaDto.getFechaInicioPausa()));
+		r.setFechaFinPausa(parseStringToLocalDateTime(repaDto.getFechaFinPausa()));
+		
+		if (vehiculoDTO != null) {
+			Vehiculo v = new Vehiculo();
+			v.setId(stringToLong(vehiculoDTO.getId()));
+			r.setVehiculo(v);
+			
+		}
+		
+		List<Material> mat = repaDto.getMateriales().stream()
+				.map(mServ::mapearDtoAMaterial)
+				.collect(Collectors.toList());
+		
+		List<Liquido> liq = repaDto.getLiquidos().stream()
+				.map(lServ::mapearDtoALiquido)
+				.collect(Collectors.toList());
+		
+		r.setMateriales(mat);
+		r.setLiquidos(liq);
+		r.setTotalHoras(stringToLong(repaDto.getTotalHoras()));
+		
+		return r;
+	}
+	
+	public ReparacionDTO mapearReparacionADTO(Reparacion r,VehiculoDTO vehiculoDTO) {
 		ReparacionDTO rDto = new ReparacionDTO();
-		rDto.setId(r.getId().toString());
+		
+		rDto.setId(longToString(r.getId()));
+		rDto.setMatricula(vehiculoDTO.getMatricula());
 		rDto.setDescripcion(r.getDescripcion());
-		rDto.setFechaFin(r.getFechaFin().toString());
-		rDto.setFechaInicio(r.getFechaInicio().toString());
+		rDto.setFechaFin(parseLocalDateTimeToString(r.getFechaFin()));
+		rDto.setFechaInicio(parseLocalDateTimeToString(r.getFechaInicio()));
+		rDto.setFechaInicioPausa(parseLocalDateTimeToString(r.getFechaInicioPausa()));
+		rDto.setFechaFinPausa(parseLocalDateTimeToString(r.getFechaFinPausa()));
+		rDto.setFechaCreacion(parseLocalDateTimeToString(r.getFechaCreacion()));
+		rDto.setTotalHoras(longToString(r.getTotalHoras()));
+		rDto.setEstado(r.getEstado().toString());
+		rDto.setVdto(vehiculoDTO);
+		
 		List<MaterialDTO> matDtos = r.getMateriales().stream()
 				.map(mServ::mapearEntidadMaterial)
 				.collect(Collectors.toList());
@@ -108,55 +149,11 @@ public class ReparacionServiceImpl implements ReparacionService{
 		rDto.setLiquidos(liqDtos);
 		
 		return rDto;
-		
-	}
-	
-	public Reparacion mapearDTOAReparacion(ReparacionDTO dto) {
-		Reparacion r = new Reparacion();
-		r.setDescripcion(dto.getDescripcion());
-		r.setFechaFin(dto.getFechaFin() != null ? LocalDateTime.parse(dto.getFechaFin()) : null);
-		r.setFechaInicio(dto.getFechaInicio() != null ? LocalDateTime.parse(dto.getFechaInicio()) : null);
-		
-		List<Material> mat = dto.getMateriales().stream()
-				.map(mServ::mapearDtoAMaterial)
-				.collect(Collectors.toList());
-		
-		List<Liquido> liq = dto.getLiquidos().stream()
-				.map(lServ::mapearDtoALiquido)
-				.collect(Collectors.toList());
-		
-		r.setMateriales(mat);
-		r.setLiquidos(liq);
-		
-		return r;
-	}
-	
-	public ReparacionDTO mapearReparacionADTO(Reparacion rep) {
-		ReparacionDTO dto = new ReparacionDTO();
-		String pattern = "dd/MM/yyyy HH:mm:ss";
-		
-		dto.setFechaInicio(localDateTimeToString(rep.getFechaInicio(), pattern));
-		logger.info("Pasar de LocalDateTime a String: {}", dto.getFechaInicio());
-		dto.setFechaFin(rep.getFechaFin().toString());
-		dto.setFechaPausa(rep.getFechaPausa().toString());
-		dto.setFechaReinicio(rep.getFechaReinicio().toString());
-		dto.setDescripcion(rep.getDescripcion());
-		
-		List<MaterialDTO> mDto = rep.getMateriales().stream()
-				.map(mServ::mapearEntidadMaterial)
-				.collect(Collectors.toList());
-		
-		List<LiquidoDTO> lDto = rep.getLiquidos().stream()
-				.map(lServ::mapearEntidadLiquido)
-				.collect(Collectors.toList());
-		dto.setLiquidos(lDto);
-		dto.setMateriales(mDto);
-		
-		return dto;
 	}
 	
 	@Override
 	public Reparacion crearReparacion(Reparacion reparacion) {
+		reparacion.setFechaCreacion(LocalDateTime.now());
 		return reparacionRepo.save(reparacion);
 		
 	}
@@ -167,6 +164,33 @@ public class ReparacionServiceImpl implements ReparacionService{
 		}
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 		return date.format(formatter);
+	}
+	
+	private String longToString(Long totalHorasLong) {
+		return Optional.ofNullable(totalHorasLong)
+				.map(l -> l.toString())
+				.orElse("");
+	}
+	
+	private Long stringToLong(String totalHorasStr) {
+		
+		return Optional.ofNullable(totalHorasStr)
+				.filter(s -> !s.trim().isEmpty())
+				.map(Long::parseLong)
+				.orElse(0L);
+	}
+	
+	private LocalDateTime parseStringToLocalDateTime(String fechaStr) {
+		if (fechaStr == null || fechaStr.trim().isEmpty()) {
+			return null;
+		}
+		return LocalDateTime.parse(fechaStr, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+	}
+	
+	private String parseLocalDateTimeToString(LocalDateTime date) {
+		
+		if (date == null) return "";
+		return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 	}
 	
 }

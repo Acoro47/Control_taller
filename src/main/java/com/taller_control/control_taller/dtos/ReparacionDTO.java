@@ -2,14 +2,16 @@ package com.taller_control.control_taller.dtos;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 public class ReparacionDTO {
 	
 	private String id;
 	private String matricula;
 	private String fechaInicio;
 	private String fechaFin;
-	private String fechaPausa;
-	private String fechaReinicio;
+	private String fechaInicioPausa;
+	private String fechaFinPausa;
 	private String descripcion;
 	private String estado;
 	private String fechaCreacion;
@@ -18,15 +20,15 @@ public class ReparacionDTO {
 	private VehiculoDTO vDto;
 	private String totalHoras;
 	
-	public ReparacionDTO(String id, String matricula, String fechaInicio, String fechaFin, String fechaPausa, String fechaReinicio ,String descripcion,String estado, String createdAt,
+	public ReparacionDTO(String id, String matricula, String fechaInicio, String fechaFin, String fechaInicioPausa, String fechaFinPausa ,String descripcion,String estado, String createdAt,
 			List<MaterialDTO> materiales, List<LiquidoDTO> liquidos, VehiculoDTO dtoV, String totalHoras) {
 		super();
 		this.id = id;
 		this.matricula = matricula;
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
-		this.fechaPausa = fechaPausa;
-		this.fechaReinicio = fechaReinicio;
+		this.fechaInicioPausa = fechaInicioPausa;
+		this.fechaFinPausa = fechaFinPausa;
 		this.descripcion = descripcion;
 		this.estado = estado;
 		this.fechaCreacion = createdAt;
@@ -80,20 +82,20 @@ public class ReparacionDTO {
 		this.fechaFin = fechaFin;
 	}
 
-	public String getFechaPausa() {
-		return fechaPausa;
+	public String getFechaInicioPausa() {
+		return fechaInicioPausa;
 	}
 
-	public void setFechaPausa(String fechaPausa) {
-		this.fechaPausa = fechaPausa;
+	public void setFechaInicioPausa(String fechaInicioPausa) {
+		this.fechaInicioPausa = fechaInicioPausa;
 	}
 
-	public String getFechaReinicio() {
-		return fechaReinicio;
+	public String getFechaFinPausa() {
+		return fechaFinPausa;
 	}
 
-	public void setFechaReinicio(String fechaReinicio) {
-		this.fechaReinicio = fechaReinicio;
+	public void setFechaFinPausa(String fechaFinPausa) {
+		this.fechaFinPausa = fechaFinPausa;
 	}
 
 	public String getDescripcion() {
@@ -132,6 +134,7 @@ public class ReparacionDTO {
 		return vDto;
 	}
 
+	@JsonBackReference
 	public void setVdto(VehiculoDTO vDto) {
 		this.vDto = vDto;
 	}
@@ -143,6 +146,7 @@ public class ReparacionDTO {
 	public String getTotalHoras() {
 		return totalHoras;
 	}
+
 	
 	
 	

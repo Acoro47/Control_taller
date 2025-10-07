@@ -32,6 +32,7 @@ public class VehiculoServiceImpl implements VehiculoService{
 		this.rService = serv;
 	}
 	
+	
 	@Override
 	public Vehiculo guardarVehiculo(Vehiculo v) {
 		logger.info("Guardando vehiculo desde el VehiculoService");
@@ -99,7 +100,11 @@ public class VehiculoServiceImpl implements VehiculoService{
 	public VehiculoDTO mapearEntidadVehiculoADTO(Vehiculo v) {
 		VehiculoDTO vDto = new VehiculoDTO();
 		
+		vDto.setId(v.getId().toString());
+		logger.info("VehiculoId: {}", vDto.getId());
+		
 		vDto.setMatricula(v.getMatricula());
+		logger.info("Vehiculo con matricula: {}", vDto.getMatricula());
 		
 		vDto.setMarca(v.getMarca());
 		
@@ -114,12 +119,16 @@ public class VehiculoServiceImpl implements VehiculoService{
 		vDto.setValorVenta(v.getValorVenta().toString());
 		
 		List<ReparacionDTO> repaDTO = new ArrayList<>();
-		logger.info("Reparaciones: {}", repaDTO);
+		logger.info("ReparacionesDTO: {}", repaDTO);
 		List<Reparacion> reparaciones = v.getReparaciones() != null ? v.getReparaciones() : new ArrayList<Reparacion>();
-		logger.info("Reparaciones: {}", repaDTO);
+		logger.info("Reparaciones: {}", reparaciones.size());
 		if (!reparaciones.isEmpty()) {
+			logger.info("Reparaciones: {}", reparaciones.size());
+			
 			reparaciones.forEach(r -> {
-				ReparacionDTO repDTO = rService.mapearEntidadReparacion(r);
+				logger.info("Estado reparacion: {}", r.getEstado());
+				ReparacionDTO repDTO = rService.mapearReparacionADTO(r,vDto);
+				logger.info("ReparacionesDTO: {}", repDTO.getMatricula());
 				repaDTO.add(repDTO);
 			});
 			
@@ -144,7 +153,7 @@ public class VehiculoServiceImpl implements VehiculoService{
 		List<Reparacion> reparaciones = v.getReparaciones();
 		
 		reparaciones.forEach(r -> {
-			ReparacionDTO repDTO = rService.mapearEntidadReparacion(r);
+			ReparacionDTO repDTO = rService.mapearReparacionADTO(r, mapearEntidadVehiculoADTO(v));
 			repaDTO.add(repDTO);
 		});
 		
@@ -175,7 +184,7 @@ public class VehiculoServiceImpl implements VehiculoService{
 		
 		if (!repaDto.isEmpty()) {
 			repaDto.forEach(r -> {
-				Reparacion rep = rService.mapearDTOAReparacion(r);
+				Reparacion rep = rService.mapearDTOAReparacion(r,mapearEntidadVehiculoADTO(v) );
 				rep.setVehiculo(v);
 				repa.add(rep);
 			});
@@ -231,6 +240,13 @@ public class VehiculoServiceImpl implements VehiculoService{
 		vehiculos.forEach(v -> dtos.add(mapearEntidadVehiculoADTO(v)));
 		
 		return dtos;
+	}
+	
+	public Long stringToLong(String id) {
+		logger.info("Id del vehiculo: {}",id);
+		Long vehiculoId = Long.parseLong(id);
+		
+		return vehiculoId;
 	}
 
 }

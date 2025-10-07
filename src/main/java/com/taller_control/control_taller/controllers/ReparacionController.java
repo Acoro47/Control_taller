@@ -40,17 +40,25 @@ public class ReparacionController {
 	public ResponseEntity<ReparacionDTO> registrarReparacion(
 			@RequestBody ReparacionDTO dto) {
 		logger.info("Guardando reparación desde el ReparacionController");
-		VehiculoDTO vDto = vService.buscarPorMatricula(dto.getMatricula());
+		logger.info("Vehiculo: {}", dto.getVdto().getId());
+		logger.info("Estado: {}", dto.getEstado());
+		
+		Vehiculo v = vService.buscarVehiculoPorId(vService.stringToLong(dto.getVdto().getId()));
+		
+		VehiculoDTO vDto = vService.mapearEntidadVehiculoADTO(v);
 		logger.info("Buscando vehiculo: {}", vDto);
-		if (vDto == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"El vehiculo no existe");
+		
+		if (vDto == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"El vehiculo no existe");
+		}
+		
 		dto.setVdto(vDto);
-		logger.info("Añadiendo vehiculo a reparacion: {}", vDto);
-		Vehiculo v = vService.mapearDTOAVehiculo(vDto);
-		Reparacion repa = rService.mapearDTOAReparacion(dto);
+		logger.info("Añadiendo vehiculo a reparacion: {}", vDto.getId());
+		Reparacion repa = rService.mapearDTOAReparacion(dto, vDto);
 		repa.setVehiculo(v);
 		Reparacion guardada = rService.crearReparacion(repa);
 		dto.setId(guardada.getId().toString());
-		
+				
 		return ResponseEntity.ok(dto);
 	}
 	
