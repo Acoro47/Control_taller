@@ -20,6 +20,7 @@ import com.taller_control.control_taller.dtos.VehiculoDTO;
 import com.taller_control.control_taller.models.Reparacion;
 import com.taller_control.control_taller.models.Vehiculo;
 import com.taller_control.control_taller.services.ReparacionServiceImpl;
+import com.taller_control.control_taller.services.VehiculoReparacionServiceImpl;
 import com.taller_control.control_taller.services.VehiculoServiceImpl;
 
 @RestController
@@ -30,42 +31,29 @@ public class ReparacionController {
 	
 	private final ReparacionServiceImpl rService;
 	private final VehiculoServiceImpl vService;
+	private final VehiculoReparacionServiceImpl vehiculoReparacionService;
 	
-	public ReparacionController(ReparacionServiceImpl serv, VehiculoServiceImpl vehiculoServ) {
+	public ReparacionController(ReparacionServiceImpl serv, VehiculoServiceImpl vehiculoServ,VehiculoReparacionServiceImpl vehiculoReparacionService ) {
 		this.rService = serv;
 		this.vService = vehiculoServ;
+		this.vehiculoReparacionService = vehiculoReparacionService;
 	}
 	
 	@PostMapping("/registrar")
 	public ResponseEntity<ReparacionDTO> registrarReparacion(
 			@RequestBody ReparacionDTO dto) {
-		logger.info("Guardando reparación desde el ReparacionController");
-		logger.info("Vehiculo: {}", dto.getVdto().getId());
-		logger.info("Estado: {}", dto.getEstado());
 		
-		Vehiculo v = vService.buscarVehiculoPorId(vService.stringToLong(dto.getVdto().getId()));
+		ReparacionDTO rDto = vehiculoReparacionService.agregarVehiculoAReparacion(dto);
 		
-		VehiculoDTO vDto = vService.mapearEntidadVehiculoADTO(v);
-		logger.info("Buscando vehiculo: {}", vDto);
-		
-		if (vDto == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"El vehiculo no existe");
-		}
-		
-		dto.setVdto(vDto);
-		logger.info("Añadiendo vehiculo a reparacion: {}", vDto.getId());
-		Reparacion repa = rService.mapearDTOAReparacion(dto, vDto);
-		repa.setVehiculo(v);
-		Reparacion guardada = rService.crearReparacion(repa);
-		dto.setId(guardada.getId().toString());
 				
-		return ResponseEntity.ok(dto);
+		return ResponseEntity.ok(null);
 	}
 	
 	
 	@GetMapping("/{id}")
 	public Reparacion obtenerReparación(@PathVariable Long id) {
-		return rService.buscarPorId(id);
+		//return rService.buscarPorId(id);
+		return null;
 	}
 	
 	@GetMapping("/{matricula}")
@@ -74,7 +62,9 @@ public class ReparacionController {
 	}
 	
 	@GetMapping("/all")
-	public List<Reparacion> listar(){
+	public List<ReparacionDTO> listar(){
+		List<ReparacionDTO> reparacionesDTO = rService.listarReparaciones();
+		
 		return rService.listarReparaciones();
 	}
 	

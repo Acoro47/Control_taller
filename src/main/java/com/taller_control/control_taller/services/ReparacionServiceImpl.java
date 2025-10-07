@@ -18,7 +18,6 @@ import com.taller_control.control_taller.dtos.VehiculoDTO;
 import com.taller_control.control_taller.models.Liquido;
 import com.taller_control.control_taller.models.Material;
 import com.taller_control.control_taller.models.Reparacion;
-import com.taller_control.control_taller.models.Vehiculo;
 import com.taller_control.control_taller.repositories.ReparacionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -46,7 +45,7 @@ public class ReparacionServiceImpl implements ReparacionService{
 		vDto.setMatricula(matricula);
 		
 		reparaciones.forEach(r -> {
-			ReparacionDTO dto = mapearReparacionADTO(r,vDto);
+			ReparacionDTO dto = mapearReparacionADTO(r);
 			listaDto.add(dto);
 		});
 		
@@ -55,30 +54,37 @@ public class ReparacionServiceImpl implements ReparacionService{
 	}
 	
 	@Override
-	public List<Reparacion> buscarPorNombreMaterial(String nombre){
-		return reparacionRepo.findByMaterialesNombre(nombre);
+	public List<ReparacionDTO> buscarPorNombreMaterial(String nombre){
+		return null; //reparacionRepo.findByMaterialesNombre(nombre);
 	}
 	
 	@Override
-	public ReparacionDTO guardarReparacion(ReparacionDTO reparacion, VehiculoDTO vDto) {
+	public ReparacionDTO guardarReparacion(ReparacionDTO reparacionDto) {
 		logger.info("Guardando reparación");
-		Reparacion r = reparacionRepo.save(mapearDTOAReparacion(reparacion, vDto));
 		
-		return mapearReparacionADTO(r,vDto);
+		Reparacion r = new Reparacion();
+		r.setFechaCreacion(LocalDateTime.now());
+				
+		return mapearReparacionADTO(r);
 	}
 	
 	@Override
-	public Reparacion buscarPorId(Long id) {
+	public ReparacionDTO buscarPorId(Long id) {
 		logger.info("Buscando reparación con id: {}", id);
-		return reparacionRepo.findById(id)
-				.orElseThrow(()-> new EntityNotFoundException("Reparación no encontrada"));
+		return null; //reparacionRepo.findById(id)
+				//.orElseThrow(()-> new EntityNotFoundException("Reparación no encontrada"));
 	}
 	
 	@Override
-	public List<Reparacion> listarReparaciones(){
-		return reparacionRepo.findAll();
+	public List<ReparacionDTO> listarReparaciones(){
+		
+		return reparacionRepo.findAll()
+                .stream()
+                .map(this::mapearReparacionADTO)
+                .collect(Collectors.toList());
 	}
-
+	
+	
 	@Override
 	public void eliminarReparacion(Long id) {
 		if(!reparacionRepo.existsById(id)) {
@@ -88,11 +94,12 @@ public class ReparacionServiceImpl implements ReparacionService{
 	}
 	
 	@Override
-	public List<Reparacion> mostrarReparacionesPorMatriculaDeVehiculo(String matricula){
-		return reparacionRepo.findByVehiculoMatricula(matricula);
+	public List<ReparacionDTO> mostrarReparacionesPorMatriculaDeVehiculo(String matricula){
+		//return reparacionRepo.findByVehiculoMatricula(matricula);
+		return null;
 	}
 	
-	public Reparacion mapearDTOAReparacion(ReparacionDTO repaDto, VehiculoDTO vehiculoDTO) {
+	public Reparacion mapearDTOAReparacion(ReparacionDTO repaDto) {
 		Reparacion r = new Reparacion();
 		
 		r.setDescripcion(repaDto.getDescripcion());
@@ -100,13 +107,6 @@ public class ReparacionServiceImpl implements ReparacionService{
 		r.setFechaInicio(parseStringToLocalDateTime(repaDto.getFechaInicio()));
 		r.setFechaInicioPausa(parseStringToLocalDateTime(repaDto.getFechaInicioPausa()));
 		r.setFechaFinPausa(parseStringToLocalDateTime(repaDto.getFechaFinPausa()));
-		
-		if (vehiculoDTO != null) {
-			Vehiculo v = new Vehiculo();
-			v.setId(stringToLong(vehiculoDTO.getId()));
-			r.setVehiculo(v);
-			
-		}
 		
 		List<Material> mat = repaDto.getMateriales().stream()
 				.map(mServ::mapearDtoAMaterial)
@@ -123,11 +123,11 @@ public class ReparacionServiceImpl implements ReparacionService{
 		return r;
 	}
 	
-	public ReparacionDTO mapearReparacionADTO(Reparacion r,VehiculoDTO vehiculoDTO) {
+	public ReparacionDTO mapearReparacionADTO(Reparacion r) {
 		ReparacionDTO rDto = new ReparacionDTO();
 		
 		rDto.setId(longToString(r.getId()));
-		rDto.setMatricula(vehiculoDTO.getMatricula());
+		rDto.setMatricula(r.getVehiculo().getMatricula());
 		rDto.setDescripcion(r.getDescripcion());
 		rDto.setFechaFin(parseLocalDateTimeToString(r.getFechaFin()));
 		rDto.setFechaInicio(parseLocalDateTimeToString(r.getFechaInicio()));
@@ -136,7 +136,6 @@ public class ReparacionServiceImpl implements ReparacionService{
 		rDto.setFechaCreacion(parseLocalDateTimeToString(r.getFechaCreacion()));
 		rDto.setTotalHoras(longToString(r.getTotalHoras()));
 		rDto.setEstado(r.getEstado().toString());
-		rDto.setVdto(vehiculoDTO);
 		
 		List<MaterialDTO> matDtos = r.getMateriales().stream()
 				.map(mServ::mapearEntidadMaterial)
@@ -152,9 +151,10 @@ public class ReparacionServiceImpl implements ReparacionService{
 	}
 	
 	@Override
-	public Reparacion crearReparacion(Reparacion reparacion) {
+	public ReparacionDTO crearReparacion(Reparacion reparacion) {
 		reparacion.setFechaCreacion(LocalDateTime.now());
-		return reparacionRepo.save(reparacion);
+		//return reparacionRepo.save(reparacion);
+		return null;
 		
 	}
 	

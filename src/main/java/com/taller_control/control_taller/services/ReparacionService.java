@@ -10,17 +10,17 @@ public interface ReparacionService {
 
 	public List<ReparacionDTO> buscarPorVehiculo(String matricula);
 	
-	public List<Reparacion> buscarPorNombreMaterial(String nombre);
+	public List<ReparacionDTO> buscarPorNombreMaterial(String nombre);
 	
-	public ReparacionDTO guardarReparacion(ReparacionDTO reparacion, VehiculoDTO vDto);
+	public ReparacionDTO guardarReparacion(ReparacionDTO reparacion);
 	
-	public Reparacion buscarPorId(Long id);
+	public ReparacionDTO buscarPorId(Long id);
 	
-	public List<Reparacion> listarReparaciones();
+	public List<ReparacionDTO> listarReparaciones();
 	
 	public void eliminarReparacion(Long id);
 	
-	public List<Reparacion> mostrarReparacionesPorMatriculaDeVehiculo(String matricula);
+	public List<ReparacionDTO> mostrarReparacionesPorMatriculaDeVehiculo(String matricula);
 	
-	public Reparacion crearReparacion(Reparacion reparacion);
+	public ReparacionDTO crearReparacion(Reparacion reparacion);
 }

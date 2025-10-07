@@ -17,11 +17,10 @@ public class ReparacionDTO {
 	private String fechaCreacion;
 	private List<MaterialDTO> materiales;
 	private List<LiquidoDTO> liquidos;
-	private VehiculoDTO vDto;
 	private String totalHoras;
 	
 	public ReparacionDTO(String id, String matricula, String fechaInicio, String fechaFin, String fechaInicioPausa, String fechaFinPausa ,String descripcion,String estado, String createdAt,
-			List<MaterialDTO> materiales, List<LiquidoDTO> liquidos, VehiculoDTO dtoV, String totalHoras) {
+			List<MaterialDTO> materiales, List<LiquidoDTO> liquidos, String totalHoras) {
 		super();
 		this.id = id;
 		this.matricula = matricula;
@@ -34,7 +33,6 @@ public class ReparacionDTO {
 		this.fechaCreacion = createdAt;
 		this.materiales = materiales;
 		this.liquidos = liquidos;
-		this.vDto = dtoV;
 		this.totalHoras = totalHoras;
 	}
 
@@ -130,15 +128,6 @@ public class ReparacionDTO {
 		this.liquidos = liquidos;
 	}
 
-	public VehiculoDTO getVdto() {
-		return vDto;
-	}
-
-	@JsonBackReference
-	public void setVdto(VehiculoDTO vDto) {
-		this.vDto = vDto;
-	}
-	
 	public void setTotalHoras(String horas) {
 		this.totalHoras = horas;
 	}

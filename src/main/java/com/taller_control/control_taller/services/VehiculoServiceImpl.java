@@ -127,7 +127,7 @@ public class VehiculoServiceImpl implements VehiculoService{
 			
 			reparaciones.forEach(r -> {
 				logger.info("Estado reparacion: {}", r.getEstado());
-				ReparacionDTO repDTO = rService.mapearReparacionADTO(r,vDto);
+				ReparacionDTO repDTO = rService.mapearReparacionADTO(r);
 				logger.info("ReparacionesDTO: {}", repDTO.getMatricula());
 				repaDTO.add(repDTO);
 			});
@@ -153,7 +153,7 @@ public class VehiculoServiceImpl implements VehiculoService{
 		List<Reparacion> reparaciones = v.getReparaciones();
 		
 		reparaciones.forEach(r -> {
-			ReparacionDTO repDTO = rService.mapearReparacionADTO(r, mapearEntidadVehiculoADTO(v));
+			ReparacionDTO repDTO = rService.mapearReparacionADTO(r);
 			repaDTO.add(repDTO);
 		});
 		
@@ -184,7 +184,7 @@ public class VehiculoServiceImpl implements VehiculoService{
 		
 		if (!repaDto.isEmpty()) {
 			repaDto.forEach(r -> {
-				Reparacion rep = rService.mapearDTOAReparacion(r,mapearEntidadVehiculoADTO(v) );
+				Reparacion rep = rService.mapearDTOAReparacion(r);
 				rep.setVehiculo(v);
 				repa.add(rep);
 			});
