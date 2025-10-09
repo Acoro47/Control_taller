@@ -15,9 +15,11 @@ import com.taller_control.control_taller.dtos.LiquidoDTO;
 import com.taller_control.control_taller.dtos.MaterialDTO;
 import com.taller_control.control_taller.dtos.ReparacionDTO;
 import com.taller_control.control_taller.dtos.VehiculoDTO;
+import com.taller_control.control_taller.models.Estado;
 import com.taller_control.control_taller.models.Liquido;
 import com.taller_control.control_taller.models.Material;
 import com.taller_control.control_taller.models.Reparacion;
+import com.taller_control.control_taller.models.Vehiculo;
 import com.taller_control.control_taller.repositories.ReparacionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -38,18 +40,10 @@ public class ReparacionServiceImpl implements ReparacionService{
 	}
 	
 	@Override
-	public List<ReparacionDTO> buscarPorVehiculo(String matricula){
+	public List<Reparacion> buscarPorVehiculo(String matricula){
 		List<Reparacion> reparaciones = reparacionRepo.findByVehiculoMatricula(matricula);
-		List<ReparacionDTO> listaDto = new ArrayList<>();
-		VehiculoDTO vDto = new VehiculoDTO();
-		vDto.setMatricula(matricula);
-		
-		reparaciones.forEach(r -> {
-			ReparacionDTO dto = mapearReparacionADTO(r);
-			listaDto.add(dto);
-		});
-		
-		return listaDto;
+				
+		return reparaciones;
 		
 	}
 	
@@ -59,28 +53,27 @@ public class ReparacionServiceImpl implements ReparacionService{
 	}
 	
 	@Override
-	public ReparacionDTO guardarReparacion(ReparacionDTO reparacionDto) {
-		logger.info("Guardando reparación");
+	public Reparacion guardarReparacion(Reparacion reparacion) {
+		logger.info("Guardando reparación para vehiculo con matricula: {}",reparacion.getVehiculo().getMatricula());
 		
-		Reparacion r = new Reparacion();
-		r.setFechaCreacion(LocalDateTime.now());
-				
-		return mapearReparacionADTO(r);
+		reparacion.setFechaCreacion(LocalDateTime.now());
+		reparacion.setEstado(Estado.PENDIENTE);
+		reparacionRepo.save(reparacion);
+		return reparacion;
 	}
 	
 	@Override
-	public ReparacionDTO buscarPorId(Long id) {
+	public Reparacion buscarPorId(Long id) {
 		logger.info("Buscando reparación con id: {}", id);
-		return null; //reparacionRepo.findById(id)
-				//.orElseThrow(()-> new EntityNotFoundException("Reparación no encontrada"));
+		return reparacionRepo.findById(id)
+				.orElseThrow(()-> new EntityNotFoundException("Reparación no encontrada"));
 	}
 	
 	@Override
-	public List<ReparacionDTO> listarReparaciones(){
+	public List<Reparacion> listarReparaciones(){
 		
 		return reparacionRepo.findAll()
                 .stream()
-                .map(this::mapearReparacionADTO)
                 .collect(Collectors.toList());
 	}
 	
@@ -99,98 +92,23 @@ public class ReparacionServiceImpl implements ReparacionService{
 		return null;
 	}
 	
-	public Reparacion mapearDTOAReparacion(ReparacionDTO repaDto) {
-		Reparacion r = new Reparacion();
-		
-		r.setDescripcion(repaDto.getDescripcion());
-		r.setFechaFin(parseStringToLocalDateTime(repaDto.getFechaFin()));
-		r.setFechaInicio(parseStringToLocalDateTime(repaDto.getFechaInicio()));
-		r.setFechaInicioPausa(parseStringToLocalDateTime(repaDto.getFechaInicioPausa()));
-		r.setFechaFinPausa(parseStringToLocalDateTime(repaDto.getFechaFinPausa()));
-		
-		List<Material> mat = repaDto.getMateriales().stream()
-				.map(mServ::mapearDtoAMaterial)
-				.collect(Collectors.toList());
-		
-		List<Liquido> liq = repaDto.getLiquidos().stream()
-				.map(lServ::mapearDtoALiquido)
-				.collect(Collectors.toList());
-		
-		r.setMateriales(mat);
-		r.setLiquidos(liq);
-		r.setTotalHoras(stringToLong(repaDto.getTotalHoras()));
-		
-		return r;
-	}
-	
-	public ReparacionDTO mapearReparacionADTO(Reparacion r) {
-		ReparacionDTO rDto = new ReparacionDTO();
-		
-		rDto.setId(longToString(r.getId()));
-		rDto.setMatricula(r.getVehiculo().getMatricula());
-		rDto.setDescripcion(r.getDescripcion());
-		rDto.setFechaFin(parseLocalDateTimeToString(r.getFechaFin()));
-		rDto.setFechaInicio(parseLocalDateTimeToString(r.getFechaInicio()));
-		rDto.setFechaInicioPausa(parseLocalDateTimeToString(r.getFechaInicioPausa()));
-		rDto.setFechaFinPausa(parseLocalDateTimeToString(r.getFechaFinPausa()));
-		rDto.setFechaCreacion(parseLocalDateTimeToString(r.getFechaCreacion()));
-		rDto.setTotalHoras(longToString(r.getTotalHoras()));
-		rDto.setEstado(r.getEstado().toString());
-		
-		List<MaterialDTO> matDtos = r.getMateriales().stream()
-				.map(mServ::mapearEntidadMaterial)
-				.collect(Collectors.toList());
-		List<LiquidoDTO> liqDtos = r.getLiquidos().stream()
-				.map(lServ::mapearEntidadLiquido)
-				.collect(Collectors.toList());
-		
-		rDto.setMateriales(matDtos);
-		rDto.setLiquidos(liqDtos);
-		
+
+	@Override
+	public ReparacionDTO agregarVehiculoDTOAReparacionDTO(VehiculoDTO vDto, ReparacionDTO rDto) {
+		rDto.setMatricula(vDto.getMatricula());
 		return rDto;
 	}
-	
+
 	@Override
-	public ReparacionDTO crearReparacion(Reparacion reparacion) {
-		reparacion.setFechaCreacion(LocalDateTime.now());
-		//return reparacionRepo.save(reparacion);
-		return null;
-		
+	public Reparacion agregarVehiculoAReparacion(Vehiculo v, Reparacion r) {
+		r.setVehiculo(v);
+		return r;
 	}
-	
-	public String localDateTimeToString(LocalDateTime date, String pattern) {
-		if (date == null) {
-			return "";
-		}
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-		return date.format(formatter);
+
+	@Override
+	public Integer buscarTotalReparaciones() {
+		List<Reparacion> todas = reparacionRepo.findAll();
+		int total = todas.size();
+		return total;
 	}
-	
-	private String longToString(Long totalHorasLong) {
-		return Optional.ofNullable(totalHorasLong)
-				.map(l -> l.toString())
-				.orElse("");
-	}
-	
-	private Long stringToLong(String totalHorasStr) {
-		
-		return Optional.ofNullable(totalHorasStr)
-				.filter(s -> !s.trim().isEmpty())
-				.map(Long::parseLong)
-				.orElse(0L);
-	}
-	
-	private LocalDateTime parseStringToLocalDateTime(String fechaStr) {
-		if (fechaStr == null || fechaStr.trim().isEmpty()) {
-			return null;
-		}
-		return LocalDateTime.parse(fechaStr, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
-	}
-	
-	private String parseLocalDateTimeToString(LocalDateTime date) {
-		
-		if (date == null) return "";
-		return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-	}
-	
 }

@@ -11,12 +11,12 @@ public interface VehiculoService {
 	public Vehiculo buscarVehiculoPorId(Long id);
 	public List<Vehiculo> listar();
 	public void eliminarVehiculo(Long id);
-	public VehiculoDTO buscarPorMatricula(String matricula);
+	public Vehiculo buscarPorMatricula(String matricula);
 	public List<Vehiculo> buscarPorMarca(String marca);
 	public List<Vehiculo> buscarPorAnio(Integer anio);
 	public Vehiculo buscarVehiculoConReparaciones(Long id);
 	public Vehiculo crearVehiculoDesdeDTO(VehiculoDTO dto);
-	public String buscarTotalVehiculos();
-	public List<VehiculoDTO> buscarPorMatriculaParcial(String query);
+	public Integer buscarTotalVehiculos();
+	public List<Vehiculo> buscarPorMatriculaParcial(String query);
 
 }

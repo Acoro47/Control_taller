@@ -15,21 +15,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.taller_control.control_taller.dtos.VehiculoDTO;
 import com.taller_control.control_taller.models.Vehiculo;
-import com.taller_control.control_taller.services.VehiculoServiceImpl;
+import com.taller_control.control_taller.services.MapperService;
+import com.taller_control.control_taller.services.VehiculoService;
 
 @RestController
 @RequestMapping("/api/vehiculos")
 public class VehiculoController {
 	
 	private Logger logger = LoggerFactory.getLogger(VehiculoController.class);
-	private final VehiculoServiceImpl vService;
+	private final VehiculoService vService;
+	private final MapperService mapperService;
 	
-	public VehiculoController(VehiculoServiceImpl serV) {
-		this.vService = serV;
+	public VehiculoController(VehiculoService vService, MapperService mapperService) {
+		this.vService = vService;
+		this.mapperService = mapperService;
 	}
 	
 	
@@ -40,11 +42,11 @@ public class VehiculoController {
 		
 		Vehiculo v = vService.crearVehiculoDesdeDTO(vDto);
 		
-		vService.guardarVehiculo(v);
+		VehiculoDTO guardado = mapperService.toVehiculoDTO(vService.guardarVehiculo(v));
 				
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
-				.body(vDto);
+				.body(guardado);
 		
 	}
 	
@@ -52,7 +54,7 @@ public class VehiculoController {
 	@GetMapping("/{matricula}")
 	public ResponseEntity<VehiculoDTO> obtenerVehiculosSinDetalles(@PathVariable String matricula){
 		logger.info("Buscando vehiculo con matricula: {}", matricula);
-		VehiculoDTO vDto = vService.buscarPorMatricula(matricula.toUpperCase());
+		VehiculoDTO vDto = mapperService.toVehiculoDTO(vService.buscarPorMatricula(matricula.toUpperCase()));
 		logger.info("El vehiculo es: {}", vDto.getId());
 		
 		return ResponseEntity.ok(vDto);
@@ -64,30 +66,21 @@ public class VehiculoController {
 		Vehiculo v = vService.buscarVehiculoPorId(id);
 		if (v == null) return ResponseEntity.notFound().build();
 		
-		VehiculoDTO vDto = vService.mapearEntidadVehiculoConDetallesADTO(v);
+		VehiculoDTO vDto = mapperService.toVehiculoDTO(v);
 		return ResponseEntity.ok(vDto);
 	}
 
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<VehiculoDTO>> listarVehiculos() {
-		List<VehiculoDTO> dtos = new ArrayList<>();
-		List<Vehiculo> vehiculos = new ArrayList<>();
-		vehiculos = vService.listar();
-		vehiculos.forEach(v -> {
-			logger.info("Controlador Vehiculo: {}",v.getId());
-			logger.info("Controlador Vehiculo: {}",v.getMatricula());
-			var dto = vService.mapearEntidadVehiculoADTO(v);
-			logger.info("Controlador VehiculoDTO: {}",dto.getMatricula());
-			dtos.add(dto);
-		});
-		
+		List<VehiculoDTO> dtos = mapperService.forEachVehiculo(vService.listar());
 		return ResponseEntity.ok(dtos);
+		
 	}
 	
 	@GetMapping("/totalVehiculos")
-	public ResponseEntity<String> obtenerTotalVehiculos() {
-		String total = vService.buscarTotalVehiculos();
+	public ResponseEntity<Integer> obtenerTotalVehiculos() {
+		int total = vService.buscarTotalVehiculos();
 		logger.info("El total de vehiculos es: {}", total);
 		
 		return ResponseEntity.ok(total);
@@ -97,7 +90,7 @@ public class VehiculoController {
 	public ResponseEntity<List<VehiculoDTO>> buscarVehiculosPorMatriculaFiltrada(
 			@RequestParam String query) {
 		logger.info("Buscando vehiculos mediante filtros de matricula {}", query);
-		List<VehiculoDTO> resultado = vService.buscarPorMatriculaParcial(query);
+		List<VehiculoDTO> resultado = mapperService.forEachVehiculo(vService.buscarPorMatriculaParcial(query));
 		return ResponseEntity.ok(resultado);
 		
 	}

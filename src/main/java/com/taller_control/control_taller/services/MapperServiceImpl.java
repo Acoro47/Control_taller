@@ -5,7 +5,10 @@ import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 
 import com.taller_control.control_taller.dtos.LiquidoDTO;
 import com.taller_control.control_taller.dtos.MaterialDTO;
@@ -16,20 +19,54 @@ import com.taller_control.control_taller.models.Material;
 import com.taller_control.control_taller.models.Reparacion;
 import com.taller_control.control_taller.models.Vehiculo;
 
+@Service
 public class MapperServiceImpl implements MapperService {
 	
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+	private final MaterialServiceImpl mService;
+	private final LiquidoServiceImpl lService;
+	
+	
+	public MapperServiceImpl(MaterialServiceImpl mService,
+								LiquidoServiceImpl lService) {
+		
+		this.mService = mService;
+		this.lService = lService;
+	}
 
 	@Override
 	public VehiculoDTO toVehiculoDTO(Vehiculo v) {
+		
+		if (v == null) return null;
 
-		return null;
+		VehiculoDTO vDto = new VehiculoDTO();
+		vDto.setId(longToString(v.getId()));
+		vDto.setMatricula(v.getMatricula());
+		vDto.setMarca(v.getMarca());
+		vDto.setModelo(v.getModelo());
+		vDto.setAnio(v.getAnio() != null ? v.getAnio().toString() : "");
+		vDto.setKm(v.getKm() != null ? v.getKm().toString() : "");
+		vDto.setValorCompra(v.getValorCompra() != null ? v.getValorCompra().toString() : "");
+		vDto.setValorVenta(v.getValorVenta() != null ? v.getValorVenta().toString(): "");
+		
+		List<ReparacionDTO> repaDTO = new ArrayList<>();
+		List<Reparacion> reparaciones = v.getReparaciones();
+		
+		reparaciones.forEach(r -> {
+			ReparacionDTO repDTO = toReparacionDTO(r);
+			repaDTO.add(repDTO);
+		});
+		
+		vDto.setReparaciones(repaDTO);
+		
+		
+		return vDto;
 	}
 
 	@Override
 	public Vehiculo toVehiculo(VehiculoDTO vdto) {
 
-		if (vdto == null) throw new NullPointerException("El Vehiculo DTO es nulo");
+		if (vdto == null) return null;
 		
 		Vehiculo v = new Vehiculo();
 		
@@ -56,74 +93,182 @@ public class MapperServiceImpl implements MapperService {
 
 	@Override
 	public ReparacionDTO toReparacionDTO(Reparacion r) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		if (r == null) return null;
+		
+		ReparacionDTO rDto = new ReparacionDTO();
+		
+		rDto.setId(longToString(r.getId()));
+		rDto.setMatricula(r.getVehiculo() != null ? r.getVehiculo().getMatricula() : null );
+		rDto.setDescripcion(r.getDescripcion());
+		rDto.setFechaFin(dateToString(r.getFechaFin()));
+		rDto.setFechaInicio(dateToString(r.getFechaInicio()));
+		rDto.setFechaInicioPausa(dateToString(r.getFechaInicioPausa()));
+		rDto.setFechaFinPausa(dateToString(r.getFechaFinPausa()));
+		rDto.setFechaCreacion(dateToString(r.getFechaCreacion()));
+		rDto.setTotalHoras(longToString(r.getTotalHoras()));
+		rDto.setEstado(r.getEstado().toString());
+		
+		List<MaterialDTO> matDtos = r.getMateriales().stream()
+				.map(mService::mapearEntidadMaterial)
+				.collect(Collectors.toList());
+		List<LiquidoDTO> liqDtos = r.getLiquidos().stream()
+				.map(lService::mapearEntidadLiquido)
+				.collect(Collectors.toList());
+		
+		rDto.setMateriales(matDtos);
+		rDto.setLiquidos(liqDtos);
+		
+		return rDto;
 	}
 
 	@Override
 	public Reparacion toReparacion(ReparacionDTO rDto) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		if (rDto == null) return null;
+		
+		Reparacion r = new Reparacion();
+		
+		r.setDescripcion(rDto.getDescripcion());
+		r.setFechaFin(dateToLocalDateTime(rDto.getFechaFin()));
+		r.setFechaInicio(dateToLocalDateTime(rDto.getFechaInicio()));
+		r.setFechaInicioPausa(dateToLocalDateTime(rDto.getFechaInicioPausa()));
+		r.setFechaFinPausa(dateToLocalDateTime(rDto.getFechaFinPausa()));
+		
+		List<Material> mat = rDto.getMateriales().stream()
+				.map(mService::mapearDtoAMaterial)
+				.collect(Collectors.toList());
+		
+		List<Liquido> liq = rDto.getLiquidos().stream()
+				.map(lService::mapearDtoALiquido)
+				.collect(Collectors.toList());
+		
+		r.setMateriales(mat);
+		r.setLiquidos(liq);
+		r.setTotalHoras(stringToLong(rDto.getTotalHoras()));
+		
+		return r;
+
 	}
 
 	@Override
 	public MaterialDTO toMaterialDTO(Material m) {
-		// TODO Auto-generated method stub
-		return null;
+
+		if (m == null) return null;
+		
+		MaterialDTO mat = new MaterialDTO();
+		
+		mat.setNombre(m.getNombre());
+		mat.setCoste(m.getNombre() != null ? m.getCoste().toString() : "0");
+		
+		return mat;
+		
 	}
 
 	@Override
 	public Material toMaterial(MaterialDTO mDto) {
-		// TODO Auto-generated method stub
-		return null;
+
+		if (mDto == null) return null;
+		
+		Material m = new Material();
+		
+		m.setNombre(mDto.getNombre());	
+		m.setCoste(mDto.getCoste() != null ? Float.parseFloat(mDto.getCoste()) : 0f);
+		
+		return m;
+		
+		
 	}
 
 	@Override
 	public LiquidoDTO toLiquidoDTO(Liquido liquid) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		if (liquid == null) return null;
+		
+		LiquidoDTO liq = new LiquidoDTO();
+		
+		liq.setNombre(liquid.getNombre());
+		liq.setPrecioLitro(liquid.getPrecioLitro().toString());
+		
+		return liq;
 	}
 
 	@Override
 	public Liquido toLiquido(LiquidoDTO liquidDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		if (liquidDTO == null) return null;
+		
+		Liquido l = new Liquido();
+		
+		l.setNombre(liquidDTO.getNombre());
+		l.setCantidad(liquidDTO.getCantidad() != null ? Float.parseFloat(liquidDTO.getCantidad()) : 0f);
+		l.setPrecioLitro(liquidDTO.getPrecioLitro() != null ? Float.parseFloat(liquidDTO.getPrecioLitro()) : 0f);
+		
+		return l;
 	}
 
 	@Override
-	public String dateToString(LocalDateTime date, String pattern) {
-		// TODO Auto-generated method stub
-		return null;
+	public String dateToString(LocalDateTime date) {
+		
+		return date != null ? date.format(formatter) : "";
 	}
 
 	@Override
-	public LocalDateTime dateToLocalDateTime(String dateStr, String pattern) {
-		// TODO Auto-generated method stub
-		return null;
+	public LocalDateTime dateToLocalDateTime(String dateStr) {
+		return (dateStr != null && !dateStr.isEmpty()) ? LocalDateTime.parse(dateStr, formatter) : null;
 	}
 
 	@Override
 	public Long stringToLong(String horasStr) {
-		// TODO Auto-generated method stub
-		return null;
+		return Optional.ofNullable(horasStr)
+				.filter(s -> !s.trim().isEmpty())
+				.map(Long::parseLong)
+				.orElse(0L);
 	}
 
 	@Override
 	public String longToString(Long horas) {
-		// TODO Auto-generated method stub
-		return null;
+		return Optional.ofNullable(horas)
+				.map(l -> l.toString())
+				.orElse("");
 	}
 
 	@Override
 	public int parseIntOrDefault(String value, int defaultValue) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		try {
+			return (value != null && !value.isEmpty()) ? Integer.parseInt(value) : defaultValue;
+			
+		} catch (NumberFormatException e) {
+			return defaultValue;
+		}
+		
 	}
 
 	@Override
 	public float parseFloatOrDefault(String value, float defaultValue) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		try {
+			return (value != null && !value.isEmpty()) ? Float.parseFloat(value) : defaultValue;
+			
+		} catch (NumberFormatException e) {
+			return defaultValue;
+		}
+		
+	}
+
+	@Override
+	public List<VehiculoDTO> forEachVehiculo(List<Vehiculo> vehiculos) {
+		return vehiculos.stream()
+				.map(this::toVehiculoDTO)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ReparacionDTO> forEachReparacion(List<Reparacion> reparaciones) {
+		return reparaciones.stream()
+				.map(this::toReparacionDTO)
+				.collect(Collectors.toList());
 	}
 
 	

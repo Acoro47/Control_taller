@@ -1,6 +1,7 @@
 package com.taller_control.control_taller.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.taller_control.control_taller.dtos.LiquidoDTO;
 import com.taller_control.control_taller.dtos.MaterialDTO;
@@ -26,13 +27,16 @@ public interface MapperService {
 	public Liquido toLiquido(LiquidoDTO liquidDTO);
 	
 	
-	public String dateToString(LocalDateTime date, String pattern);
-	public LocalDateTime dateToLocalDateTime(String dateStr, String pattern);
+	public String dateToString(LocalDateTime date);
+	public LocalDateTime dateToLocalDateTime(String dateStr);
 	
 	public Long stringToLong(String horasStr);
 	public String longToString(Long horas);
 	
 	public int parseIntOrDefault(String value, int defaultValue);
 	public float parseFloatOrDefault(String value, float defaultValue);
+	
+	public List<VehiculoDTO> forEachVehiculo(List<Vehiculo> vehiculos);
+	public List<ReparacionDTO> forEachReparacion(List<Reparacion> reparaciones);
 
 }

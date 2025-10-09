@@ -66,15 +66,14 @@ public class VehiculoServiceImpl implements VehiculoService{
 	}
 	
 	@Override
-	public VehiculoDTO buscarPorMatricula(String matricula) {
+	public Vehiculo buscarPorMatricula(String matricula) {
 		Vehiculo v = repo.findByMatricula(matricula)
 				.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"El vehiculo no se ha encontrado"));
 		if (v == null) {
 			throw new NullPointerException("El vehiculo no existe");
 		}
-		VehiculoDTO vDto = mapearEntidadVehiculoADTO(v);
 		
-		return vDto;
+		return v;
 	}
 	
 	@Override
@@ -95,104 +94,6 @@ public class VehiculoServiceImpl implements VehiculoService{
 				.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"El vehiculo no se ha encontrado"));
 	}
 	
-	
-	
-	public VehiculoDTO mapearEntidadVehiculoADTO(Vehiculo v) {
-		VehiculoDTO vDto = new VehiculoDTO();
-		
-		vDto.setId(v.getId().toString());
-		logger.info("VehiculoId: {}", vDto.getId());
-		
-		vDto.setMatricula(v.getMatricula());
-		logger.info("Vehiculo con matricula: {}", vDto.getMatricula());
-		
-		vDto.setMarca(v.getMarca());
-		
-		vDto.setModelo(v.getModelo());
-		
-		vDto.setAnio(v.getAnio().toString());
-		
-		vDto.setKm(v.getKm().toString());
-		
-		vDto.setValorCompra(v.getValorCompra().toString());
-		
-		vDto.setValorVenta(v.getValorVenta().toString());
-		
-		List<ReparacionDTO> repaDTO = new ArrayList<>();
-		logger.info("ReparacionesDTO: {}", repaDTO);
-		List<Reparacion> reparaciones = v.getReparaciones() != null ? v.getReparaciones() : new ArrayList<Reparacion>();
-		logger.info("Reparaciones: {}", reparaciones.size());
-		if (!reparaciones.isEmpty()) {
-			logger.info("Reparaciones: {}", reparaciones.size());
-			
-			reparaciones.forEach(r -> {
-				logger.info("Estado reparacion: {}", r.getEstado());
-				ReparacionDTO repDTO = rService.mapearReparacionADTO(r);
-				logger.info("ReparacionesDTO: {}", repDTO.getMatricula());
-				repaDTO.add(repDTO);
-			});
-			
-		}
-		vDto.setReparaciones(repaDTO);	
-		
-		return vDto;
-	}
-	
-	public VehiculoDTO mapearEntidadVehiculoConDetallesADTO(Vehiculo v) {
-		VehiculoDTO vDto = new VehiculoDTO();
-		
-		vDto.setMatricula(v.getMatricula());
-		vDto.setMarca(v.getMarca());
-		vDto.setModelo(v.getModelo());
-		vDto.setAnio(v.getAnio().toString());
-		vDto.setKm(v.getKm().toString());
-		vDto.setValorCompra(v.getValorCompra().toString());
-		vDto.setValorVenta(v.getValorVenta().toString());
-		
-		List<ReparacionDTO> repaDTO = new ArrayList<>();
-		List<Reparacion> reparaciones = v.getReparaciones();
-		
-		reparaciones.forEach(r -> {
-			ReparacionDTO repDTO = rService.mapearReparacionADTO(r);
-			repaDTO.add(repDTO);
-		});
-		
-		vDto.setReparaciones(repaDTO);
-		
-		
-		return vDto;
-	}
-	
-	public Vehiculo mapearDTOAVehiculo(VehiculoDTO dto) {
-		Vehiculo v = new Vehiculo();
-		
-		v.setMatricula(dto.getMatricula());
-		v.setMarca(dto.getMarca());
-		v.setModelo(dto.getModelo());
-		try {
-			v.setAnio(dto.getAnio() != null ? Integer.parseInt(dto.getAnio()) : Year.now().getValue());
-		} catch(NumberFormatException e) {
-			v.setAnio(Year.now().getValue());
-		}
-		
-		v.setKm(dto.getKm() != null ? Float.parseFloat(dto.getKm()) : 0f);
-		v.setValorCompra(dto.getValorCompra() != null ? Float.parseFloat(dto.getValorCompra()) : 0f);
-		v.setValorVenta(dto.getValorVenta() != null ? Float.parseFloat(dto.getValorVenta()) : 0f);
-		
-		List<Reparacion> repa = new ArrayList<>();
-		List<ReparacionDTO> repaDto = dto.getReparaciones() != null ? dto.getReparaciones() : new ArrayList<ReparacionDTO>();
-		
-		if (!repaDto.isEmpty()) {
-			repaDto.forEach(r -> {
-				Reparacion rep = rService.mapearDTOAReparacion(r);
-				rep.setVehiculo(v);
-				repa.add(rep);
-			});
-			v.setReparaciones(repa);
-		}
-		
-		return v;
-	}
 	
 	@Override
 	public Vehiculo crearVehiculoDesdeDTO(VehiculoDTO dto) {
@@ -216,10 +117,10 @@ public class VehiculoServiceImpl implements VehiculoService{
 	}
 	
 	@Override
-	public String buscarTotalVehiculos() {
+	public Integer buscarTotalVehiculos() {
 		
 		List<Vehiculo>vehiculosExistentes = repo.findAll();
-		String total = String.valueOf(vehiculosExistentes.size());
+		int total = vehiculosExistentes.size();
 		
 		return total;
 	}
@@ -233,13 +134,11 @@ public class VehiculoServiceImpl implements VehiculoService{
 	}
 
 	@Override
-	public List<VehiculoDTO> buscarPorMatriculaParcial(String query) {
+	public List<Vehiculo> buscarPorMatriculaParcial(String query) {
 		
 		List<Vehiculo> vehiculos = repo.findByMatriculaContainingIgnoreCase(query);
-		List<VehiculoDTO> dtos = new ArrayList<>();
-		vehiculos.forEach(v -> dtos.add(mapearEntidadVehiculoADTO(v)));
-		
-		return dtos;
+				
+		return vehiculos;
 	}
 	
 	public Long stringToLong(String id) {
