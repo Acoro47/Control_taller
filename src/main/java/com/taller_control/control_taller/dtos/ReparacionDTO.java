@@ -2,7 +2,6 @@ package com.taller_control.control_taller.dtos;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class ReparacionDTO {
 	

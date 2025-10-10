@@ -1,23 +1,17 @@
 package com.taller_control.control_taller.services;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.taller_control.control_taller.dtos.LiquidoDTO;
-import com.taller_control.control_taller.dtos.MaterialDTO;
 import com.taller_control.control_taller.dtos.ReparacionDTO;
 import com.taller_control.control_taller.dtos.VehiculoDTO;
 import com.taller_control.control_taller.models.Estado;
-import com.taller_control.control_taller.models.Liquido;
-import com.taller_control.control_taller.models.Material;
 import com.taller_control.control_taller.models.Reparacion;
 import com.taller_control.control_taller.models.Vehiculo;
 import com.taller_control.control_taller.repositories.ReparacionRepository;
@@ -111,4 +105,65 @@ public class ReparacionServiceImpl implements ReparacionService{
 		int total = todas.size();
 		return total;
 	}
+
+	@Override
+	public Reparacion iniciarReparacion(Reparacion repa) {
+		List<Reparacion> reparaciones = listarReparaciones();
+		boolean enReparacion = reparaciones.stream()
+				.anyMatch(r -> r.getEstado() == Estado.EN_REPARACION);
+		
+		if (enReparacion) {
+			return null;
+		}
+		repa.setEstado(Estado.EN_REPARACION);
+		repa.setFechaInicio(LocalDateTime.now());
+		Reparacion guardada = reparacionRepo.save(repa);
+		return guardada;
+	}
+
+	@Override
+	public Reparacion pausarReparacion(Reparacion repa) {
+		if (repa.getEstado() != Estado.EN_REPARACION) {
+			return null;
+		}
+		LocalDateTime ahora = LocalDateTime.now();
+		repa.setEstado(Estado.PAUSADO);
+		repa.setFechaInicioPausa(ahora);
+		repa.setTotalHoras(
+				repa.getTotalHoras() == null 
+				? duracionReparacion(repa, ahora) 
+				: duracionReparacion(repa,ahora) + repa.getTotalHoras());
+		
+		Reparacion actualizada = reparacionRepo.save(repa);
+		return actualizada;
+	}
+	
+	@Override
+	public Reparacion reiniciarReparacion(Reparacion repa) {
+
+		if (repa.getEstado() != Estado.PAUSADO) {
+			return null;
+		}
+		LocalDateTime ahora = LocalDateTime.now();
+		repa.setEstado(Estado.EN_REPARACION);
+		repa.setFechaFinPausa(ahora);
+		Reparacion actualizada = reparacionRepo.save(repa);
+		
+		return actualizada;
+	}
+	
+
+	private double duracionReparacion(Reparacion reparacion, LocalDateTime hasta) {
+		LocalDateTime finPausa = reparacion.getFechaFinPausa();
+		LocalDateTime inicio = reparacion.getFechaInicio();
+		
+		LocalDateTime reinicio = finPausa != null ? finPausa : inicio;
+	
+		Duration duration = Duration.between(reinicio, hasta);
+		logger.info("Duracion en minutos (decimales): {}", duration.toMinutes());
+		
+		return duration.toMinutes() / 60.0;
+	}
+
+	
 }

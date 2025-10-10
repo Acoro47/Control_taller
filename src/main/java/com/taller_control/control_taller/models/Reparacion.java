@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -30,20 +31,24 @@ public class Reparacion {
 	private Long id;
 	
 	@Column(columnDefinition = "TIMESTAMP")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
 	private LocalDateTime fechaInicio;
 	
 	@Column(columnDefinition = "TIMESTAMP")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
 	private LocalDateTime fechaFin;
 	
 	@Column(columnDefinition = "TIMESTAMP")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
 	private LocalDateTime fechaInicioPausa;
 	
 	@Column(columnDefinition = "TIMESTAMP")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
 	private LocalDateTime fechaFinPausa;
 	
 	private String descripcion;
 	
-	private Long totalHoras;	
+	private Double totalHoras;	
 	
 	@OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
@@ -59,12 +64,13 @@ public class Reparacion {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "vehiculo_id")
 	@NotNull(message = "El vehiculo es obligatorio")
+	@JsonBackReference
 	private Vehiculo vehiculo;
 	
 	private LocalDateTime fechaCreacion;
 
 	public Reparacion(Long id, LocalDateTime fechaInicio, LocalDateTime fechaFin, LocalDateTime fechaInicioPausa,
-			LocalDateTime fechaFinPausa, String descripcion, Long totalHoras, List<Material> materiales,
+			LocalDateTime fechaFinPausa, String descripcion, Double totalHoras, List<Material> materiales,
 			List<Liquido> liquidos, Estado estado, Vehiculo vehiculo, LocalDateTime createAt) {
 		super();
 		this.id = id;
@@ -133,11 +139,11 @@ public class Reparacion {
 		this.descripcion = descripcion;
 	}
 
-	public Long getTotalHoras() {
+	public Double getTotalHoras() {
 		return totalHoras;
 	}
 
-	public void setTotalHoras(Long totalHoras) {
+	public void setTotalHoras(Double totalHoras) {
 		this.totalHoras = totalHoras;
 	}
 

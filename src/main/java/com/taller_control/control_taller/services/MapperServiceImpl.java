@@ -106,7 +106,7 @@ public class MapperServiceImpl implements MapperService {
 		rDto.setFechaInicioPausa(dateToString(r.getFechaInicioPausa()));
 		rDto.setFechaFinPausa(dateToString(r.getFechaFinPausa()));
 		rDto.setFechaCreacion(dateToString(r.getFechaCreacion()));
-		rDto.setTotalHoras(longToString(r.getTotalHoras()));
+		rDto.setTotalHoras(doubleToString(r.getTotalHoras()));
 		rDto.setEstado(r.getEstado().toString());
 		
 		List<MaterialDTO> matDtos = r.getMateriales().stream()
@@ -145,7 +145,7 @@ public class MapperServiceImpl implements MapperService {
 		
 		r.setMateriales(mat);
 		r.setLiquidos(liq);
-		r.setTotalHoras(stringToLong(rDto.getTotalHoras()));
+		r.setTotalHoras(parseDoubleOrDefault(rDto.getTotalHoras()));
 		
 		return r;
 
@@ -269,6 +269,21 @@ public class MapperServiceImpl implements MapperService {
 		return reparaciones.stream()
 				.map(this::toReparacionDTO)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public double parseDoubleOrDefault(String value) {
+		return Optional.ofNullable(value)
+				.filter(s -> !s.trim().isEmpty())
+				.map(Double::parseDouble)
+				.orElse(0.0);
+	}
+
+	@Override
+	public String doubleToString(Double horas) {
+		return Optional.ofNullable(horas)
+				.map(l -> l.toString())
+				.orElse("");
 	}
 
 	

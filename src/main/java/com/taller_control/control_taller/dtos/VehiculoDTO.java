@@ -2,8 +2,6 @@ package com.taller_control.control_taller.dtos;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 public class VehiculoDTO {
 	
 	private String id;
@@ -14,7 +12,6 @@ public class VehiculoDTO {
 	private String km;
 	private String valorCompra;
 	private String valorVenta;
-	@JsonManagedReference
 	private List<ReparacionDTO> reparaciones;
 	
 	public VehiculoDTO(String id,String matricula, String marca, String modelo, String anio,String km,String valorCompra, String valorVenta, List<ReparacionDTO> repa) {

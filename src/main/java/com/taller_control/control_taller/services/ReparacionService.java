@@ -28,4 +28,10 @@ public interface ReparacionService {
 	public Reparacion agregarVehiculoAReparacion(Vehiculo v, Reparacion r);
 	
 	public Integer buscarTotalReparaciones();
+	
+	public Reparacion iniciarReparacion(Reparacion repa);
+	
+	public Reparacion pausarReparacion(Reparacion repa);
+	
+	public Reparacion reiniciarReparacion(Reparacion repa);
 }

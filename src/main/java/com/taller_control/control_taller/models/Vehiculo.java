@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -53,7 +54,7 @@ public class Vehiculo {
 	private Float valorVenta = 0f;
 	
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonBackReference
+	@JsonManagedReference
 	private List<Reparacion> reparaciones = new ArrayList<>();
 
 	public Vehiculo(Long id, String modelo, String marca, String matricula, Integer anio, Float km, Float valorAdquisicion, Float valorVenta, List<Reparacion> reparaciones) {

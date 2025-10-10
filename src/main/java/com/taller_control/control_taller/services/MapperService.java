@@ -31,7 +31,10 @@ public interface MapperService {
 	public LocalDateTime dateToLocalDateTime(String dateStr);
 	
 	public Long stringToLong(String horasStr);
-	public String longToString(Long horas);
+	public String longToString(Long horas);	
+
+	public double parseDoubleOrDefault(String value);
+	public String doubleToString(Double horas);
 	
 	public int parseIntOrDefault(String value, int defaultValue);
 	public float parseFloatOrDefault(String value, float defaultValue);

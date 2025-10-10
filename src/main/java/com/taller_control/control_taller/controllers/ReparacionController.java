@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,9 +70,9 @@ public class ReparacionController {
 	}
 	
 	@GetMapping("/matricula/{matricula}")
-	public List<ReparacionDTO> listarReparacionesPorMatricula(@PathVariable String matricula) {
+	public ResponseEntity<List<ReparacionDTO>> listarReparacionesPorMatricula(@PathVariable String matricula) {
 		List<ReparacionDTO> rDto = mapperService.forEachReparacion(rService.buscarPorVehiculo(matricula));
-		return rDto;
+		return ResponseEntity.ok(rDto);
 	}
 	
 	@GetMapping("/all")
@@ -90,6 +91,57 @@ public class ReparacionController {
 	public ResponseEntity<Integer> obtenerTotalReparaciones() {
 		int total = rService.buscarTotalReparaciones();
 		return ResponseEntity.ok(total);
+	}
+	
+	@GetMapping("/iniciar/{id}")
+	public ResponseEntity<ReparacionDTO> iniciarReparacion(@PathVariable String id){
+		if (id == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		Long idLong = mapperService.stringToLong(id);
+		Reparacion r = rService.buscarPorId(idLong);
+		if (r == null) {
+			return ResponseEntity.notFound().build();
+		}
+		Reparacion iniciada = rService.iniciarReparacion(r);
+		
+		if (iniciada == null) {
+			return ResponseEntity
+					.status(HttpStatus.CONFLICT)
+					.build();
+		}
+		ReparacionDTO rDto = mapperService.toReparacionDTO(r);
+		return ResponseEntity.ok(rDto);
+	}
+	
+	@GetMapping("/pausar/{id}")
+	public ResponseEntity<ReparacionDTO> pausarReparacion(@PathVariable String id) {
+		if (id == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		Long idLong = mapperService.stringToLong(id);
+		Reparacion r = rService.buscarPorId(idLong);
+		if (r == null) {
+			return ResponseEntity.notFound().build();
+		}
+		Reparacion pausada = rService.pausarReparacion(r);
+		ReparacionDTO pausadaDto = mapperService.toReparacionDTO(pausada);
+		return ResponseEntity.ok(pausadaDto);
+	}
+	
+	@GetMapping("/reiniciar/{id}")
+	public ResponseEntity<ReparacionDTO> reiniciarReparacion(@PathVariable String id){
+		if (id == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		Long idLong = mapperService.stringToLong(id);
+		Reparacion r = rService.buscarPorId(idLong);
+		if (r == null) {
+			return ResponseEntity.notFound().build();
+		}
+		Reparacion reiniciada = rService.reiniciarReparacion(r);
+		ReparacionDTO reiniciadaDto = mapperService.toReparacionDTO(reiniciada);
+		return ResponseEntity.ok(reiniciadaDto);
 	}
 
 }
