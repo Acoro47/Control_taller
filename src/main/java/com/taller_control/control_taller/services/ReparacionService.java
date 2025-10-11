@@ -34,4 +34,6 @@ public interface ReparacionService {
 	public Reparacion pausarReparacion(Reparacion repa);
 	
 	public Reparacion reiniciarReparacion(Reparacion repa);
+	
+	public Reparacion finalizarReparacion(Reparacion repa);
 }

@@ -116,6 +116,7 @@ public class ReparacionController {
 	
 	@GetMapping("/pausar/{id}")
 	public ResponseEntity<ReparacionDTO> pausarReparacion(@PathVariable String id) {
+		
 		if (id == null) {
 			return ResponseEntity.badRequest().build();
 		}
@@ -134,14 +135,40 @@ public class ReparacionController {
 		if (id == null) {
 			return ResponseEntity.badRequest().build();
 		}
+		
 		Long idLong = mapperService.stringToLong(id);
 		Reparacion r = rService.buscarPorId(idLong);
 		if (r == null) {
 			return ResponseEntity.notFound().build();
 		}
 		Reparacion reiniciada = rService.reiniciarReparacion(r);
+		if (reiniciada == null) {
+			return ResponseEntity
+					.status(HttpStatus.CONFLICT)
+					.build();
+		}
 		ReparacionDTO reiniciadaDto = mapperService.toReparacionDTO(reiniciada);
 		return ResponseEntity.ok(reiniciadaDto);
+	}
+	
+	@GetMapping("/finalizar/{id}")
+	public ResponseEntity<ReparacionDTO> finalizarReparacion(@PathVariable String id){
+		if (id == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		Long idLong = mapperService.stringToLong(id);
+		Reparacion r = rService.buscarPorId(idLong);
+		if (r == null) {
+			return ResponseEntity.notFound().build();
+		}
+		Reparacion finalizada = rService.finalizarReparacion(r);
+		if (finalizada == null) {
+			return ResponseEntity
+					.status(HttpStatus.CONFLICT)
+					.build();
+		}
+		ReparacionDTO finalizadaDto = mapperService.toReparacionDTO(r);
+		return ResponseEntity.ok(finalizadaDto);
 	}
 
 }

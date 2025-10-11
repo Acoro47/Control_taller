@@ -140,7 +140,15 @@ public class ReparacionServiceImpl implements ReparacionService{
 	
 	@Override
 	public Reparacion reiniciarReparacion(Reparacion repa) {
-
+		
+		List<Reparacion> reparaciones = listarReparaciones();
+		boolean enReparacion = reparaciones.stream()
+				.anyMatch(r -> r.getEstado() == Estado.EN_REPARACION);
+		
+		if (enReparacion) {
+			return null;
+		}
+		
 		if (repa.getEstado() != Estado.PAUSADO) {
 			return null;
 		}
@@ -163,6 +171,25 @@ public class ReparacionServiceImpl implements ReparacionService{
 		logger.info("Duracion en minutos (decimales): {}", duration.toMinutes());
 		
 		return duration.toMinutes() / 60.0;
+	}
+
+	@Override
+	public Reparacion finalizarReparacion(Reparacion repa) {
+
+		if (repa.getEstado() == Estado.ACABADO) {
+			return null;
+		}
+		LocalDateTime ahora = LocalDateTime.now();
+		repa.setEstado(Estado.ACABADO);
+		repa.setFechaFin(ahora);
+		repa.setTotalHoras(
+				repa.getTotalHoras() == null 
+				? duracionReparacion(repa, ahora) 
+				: duracionReparacion(repa,ahora) + repa.getTotalHoras());
+		
+		Reparacion finalizada = reparacionRepo.save(repa);
+		
+		return finalizada;
 	}
 
 	
