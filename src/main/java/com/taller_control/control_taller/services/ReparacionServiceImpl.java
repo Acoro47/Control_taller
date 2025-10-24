@@ -24,13 +24,9 @@ public class ReparacionServiceImpl implements ReparacionService{
 	private final Logger logger = LoggerFactory.getLogger(ReparacionServiceImpl.class);
 	
 	private final ReparacionRepository reparacionRepo;
-	private final MaterialServiceImpl mServ;
-	private final LiquidoServiceImpl lServ;
 	
 	public ReparacionServiceImpl(ReparacionRepository repo, MaterialServiceImpl serv, LiquidoServiceImpl lser) {
 		this.reparacionRepo = repo;
-		this.mServ = serv;
-		this.lServ = lser;
 	}
 	
 	@Override
@@ -71,7 +67,6 @@ public class ReparacionServiceImpl implements ReparacionService{
                 .collect(Collectors.toList());
 	}
 	
-	
 	@Override
 	public void eliminarReparacion(Long id) {
 		if(!reparacionRepo.existsById(id)) {
@@ -86,7 +81,6 @@ public class ReparacionServiceImpl implements ReparacionService{
 		return null;
 	}
 	
-
 	@Override
 	public ReparacionDTO agregarVehiculoDTOAReparacionDTO(VehiculoDTO vDto, ReparacionDTO rDto) {
 		rDto.setMatricula(vDto.getMatricula());
@@ -160,7 +154,6 @@ public class ReparacionServiceImpl implements ReparacionService{
 		return actualizada;
 	}
 	
-
 	private double duracionReparacion(Reparacion reparacion, LocalDateTime hasta) {
 		LocalDateTime finPausa = reparacion.getFechaFinPausa();
 		LocalDateTime inicio = reparacion.getFechaInicio();

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.taller_control.control_taller.dtos.MaterialDTO;
 import com.taller_control.control_taller.models.Material;
 import com.taller_control.control_taller.repositories.MaterialRepository;
 
@@ -17,31 +16,17 @@ public class MaterialServiceImpl implements MaterialService{
 		this.matRepo = repo;
 	}
 	
-	public MaterialDTO mapearEntidadMaterial(Material m) {
-		
-		MaterialDTO mat = new MaterialDTO();
-		
-		mat.setNombre(m.getNombre());
-		mat.setCoste(m.getCoste().toString());
-		
-		return mat;
-	}
-	
-	public Material mapearDtoAMaterial(MaterialDTO dto) {
-		
-		Material m = new Material();
-		
-		m.setNombre(dto.getNombre());	
-		m.setCoste(dto.getCoste() != null ? Float.parseFloat(dto.getCoste()) : 0f);
-		
-		return m;
-	}
-
 	@Override
 	public List<Material> listarMateriales() {
 		List<Material> materiales = matRepo.findAll();
 		
 		return materiales;
+	}
+
+	@Override
+	public Material crearMaterial(Material m) {
+		Material guardado = matRepo.save(m);
+		return guardado;
 	}
 	
 }

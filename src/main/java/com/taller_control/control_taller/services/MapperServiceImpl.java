@@ -110,10 +110,10 @@ public class MapperServiceImpl implements MapperService {
 		rDto.setEstado(r.getEstado().toString());
 		
 		List<MaterialDTO> matDtos = r.getMateriales().stream()
-				.map(mService::mapearEntidadMaterial)
+				.map(this::toMaterialDTO)
 				.collect(Collectors.toList());
 		List<LiquidoDTO> liqDtos = r.getLiquidos().stream()
-				.map(lService::mapearEntidadLiquido)
+				.map(this::toLiquidoDTO)
 				.collect(Collectors.toList());
 		
 		rDto.setMateriales(matDtos);
@@ -136,11 +136,11 @@ public class MapperServiceImpl implements MapperService {
 		r.setFechaFinPausa(dateToLocalDateTime(rDto.getFechaFinPausa()));
 		
 		List<Material> mat = rDto.getMateriales().stream()
-				.map(mService::mapearDtoAMaterial)
+				.map(this::toMaterial)
 				.collect(Collectors.toList());
 		
 		List<Liquido> liq = rDto.getLiquidos().stream()
-				.map(lService::mapearDtoALiquido)
+				.map(this::toLiquido)
 				.collect(Collectors.toList());
 		
 		r.setMateriales(mat);
@@ -285,6 +285,24 @@ public class MapperServiceImpl implements MapperService {
 				.map(l -> l.toString())
 				.orElse("");
 	}
+
+	@Override
+	public List<MaterialDTO> toListMaterialDTO(List<Material> materiales) {
+		if (materiales.size() == 0) {
+			return null;
+		}
+		return materiales.stream()
+		.map(this::toMaterialDTO)
+		.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Material> toListMaterial(List<MaterialDTO> dtos) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 
 	
 

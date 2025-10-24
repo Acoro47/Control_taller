@@ -14,19 +14,30 @@ import com.taller_control.control_taller.models.Vehiculo;
 
 public interface MapperService {
 	
+	// Vehiculos
 	public VehiculoDTO toVehiculoDTO(Vehiculo v);
 	public Vehiculo toVehiculo(VehiculoDTO vdto);
 	
+	
+	// Reparaciones
 	public ReparacionDTO toReparacionDTO(Reparacion r);
 	public Reparacion toReparacion(ReparacionDTO rDto);
+	
+	
+	// Materiales
+	public List<MaterialDTO> toListMaterialDTO(List<Material> materiales);
+	public List<Material> toListMaterial(List<MaterialDTO> dtos);
 	
 	public MaterialDTO toMaterialDTO(Material m);
 	public Material toMaterial(MaterialDTO mDto);
 	
+	// Liquidos	
 	public LiquidoDTO toLiquidoDTO(Liquido liquid);
 	public Liquido toLiquido(LiquidoDTO liquidDTO);
 	
 	
+	
+	// Genericos
 	public String dateToString(LocalDateTime date);
 	public LocalDateTime dateToLocalDateTime(String dateStr);
 	
