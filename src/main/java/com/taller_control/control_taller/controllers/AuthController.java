@@ -39,17 +39,14 @@ public class AuthController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody RegisterRequestDTO dto){
-		if (!dto.getPassword().equals(dto.getConfirmarPass())) {
-			throw new IllegalArgumentException("Las contraseñas no coinciden");
-			
-		}
+		
 		Usuario u = new Usuario();
 		u.setUsername(dto.getUsuario());
 		u.setPassword(dto.getPassword());
 		Usuario saved = userService.registrarUsuario(u);
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
-				.body(Map.of("id", saved.getId(), "user", saved.getUsername()));
+				.body(Map.of("id", saved.getId(), "username", saved.getUsername()));
 	}
 	
 	@PostMapping("/login")

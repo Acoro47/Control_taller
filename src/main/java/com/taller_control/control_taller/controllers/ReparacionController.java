@@ -170,5 +170,13 @@ public class ReparacionController {
 		ReparacionDTO finalizadaDto = mapperService.toReparacionDTO(r);
 		return ResponseEntity.ok(finalizadaDto);
 	}
-
+	
+	@GetMapping("/iniciada")
+		public ResponseEntity<ReparacionDTO> reparacionIniciada(){
+			ReparacionDTO dto = mapperService.toReparacionDTO(rService.buscarIniciada());
+			if (dto == null) {
+				return null;
+			}
+			return ResponseEntity.ok(dto);
+	}
 }

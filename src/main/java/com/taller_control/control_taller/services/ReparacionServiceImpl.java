@@ -185,5 +185,13 @@ public class ReparacionServiceImpl implements ReparacionService{
 		return finalizada;
 	}
 
+	@Override
+	public Reparacion buscarIniciada() {
+
+		Reparacion r = reparacionRepo.findByEstado(Estado.EN_REPARACION);
+		
+		return r;
+	}
+
 	
 }

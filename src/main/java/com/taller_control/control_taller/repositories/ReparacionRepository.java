@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.taller_control.control_taller.dtos.ReparacionDTO;
+import com.taller_control.control_taller.models.Estado;
 import com.taller_control.control_taller.models.Reparacion;
 
 @Repository
@@ -16,6 +17,8 @@ public interface ReparacionRepository extends JpaRepository<Reparacion, Long>{
 	// Buscar por materiales
 	List<Reparacion> findByMaterialesNombre(String nombre);
 	
-	// Buscar reparacion con sus materiales
+	// Reparacion iniciada
+	
+	Reparacion findByEstado(Estado estado);
 	
 }
