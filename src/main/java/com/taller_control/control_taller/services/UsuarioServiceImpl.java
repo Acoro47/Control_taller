@@ -71,4 +71,9 @@ public class UsuarioServiceImpl implements UserDetailsService{
 				.map(user -> encoder.matches(password, user.getPassword()))
 				.orElse(false);
 	}
+	
+	public boolean existeUsuario(String username) {
+		
+		return repo.existsByUsername(username);
+	}
 }

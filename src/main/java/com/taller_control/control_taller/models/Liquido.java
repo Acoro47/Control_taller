@@ -2,6 +2,9 @@ package com.taller_control.control_taller.models;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
@@ -9,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Positive;
@@ -30,18 +34,17 @@ public class Liquido {
 	@PositiveOrZero(message = "El precio por litro no puede ser negativo")
 	private Float precioLitro;
 	
-	@ManyToOne
-	@JoinColumn(name = "reparacion_id")
+	@ManyToMany(mappedBy="liquidos")
 	@JsonBackReference
-	private Reparacion reparacion;
+	private List<Reparacion> reparaciones = new ArrayList<>();
 
-	public Liquido(Long id, String nombre, Float cantidad, Float precioLitro, Reparacion reparacion) {
+	public Liquido(Long id, String nombre, Float cantidad, Float precioLitro, List<Reparacion> reparaciones) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.cantidad = cantidad;
 		this.precioLitro = precioLitro;
-		this.reparacion = reparacion;
+		this.reparaciones = reparaciones;
 	}
 
 	public Liquido() {
@@ -80,13 +83,15 @@ public class Liquido {
 		this.precioLitro = precioLitro;
 	}
 
-	public Reparacion getReparacion() {
-		return reparacion;
+	public List<Reparacion> getReparaciones() {
+		return reparaciones;
 	}
 
-	public void setReparacion(Reparacion reparacion) {
-		this.reparacion = reparacion;
+	public void setReparaciones(List<Reparacion> reparaciones) {
+		this.reparaciones = reparaciones;
 	}
+
+	
 
 
 }

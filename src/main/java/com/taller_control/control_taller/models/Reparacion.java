@@ -17,6 +17,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -50,11 +52,21 @@ public class Reparacion {
 	
 	private Double totalHoras;	
 	
-	@OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToMany
+	@JoinTable(
+			name="reparacion_material",
+			joinColumns = @JoinColumn(name="reparacion_id"),
+			inverseJoinColumns = @JoinColumn(name="material_id")
+			)
 	@JsonManagedReference
 	private List<Material> materiales = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToMany
+	@JoinTable(
+			name="reparacion_liquido",
+			joinColumns = @JoinColumn(name="reparacion_id"),
+			inverseJoinColumns = @JoinColumn(name="liquido_id")
+			)
 	@JsonManagedReference
 	private List<Liquido> liquidos = new ArrayList<>();
 	
@@ -187,32 +199,5 @@ public class Reparacion {
 		this.fechaCreacion = fechaCreacion;
 	}
 
-	
-		
-	
-	// Mantener la integridad de las relaciones Material y Liquido
-	
-	
-	
-
-	public void addMaterial(Material material) {
-		materiales.add(material);
-		material.setReparacion(this);
-	}
-	
-	public void removeMaterial(Material material) {
-		materiales.remove(material);
-		material.setReparacion(null);
-	}
-	
-	public void addLiquido(Liquido liquido) {
-		liquidos.add(liquido);
-		liquido.setReparacion(this);
-	}
-	
-	public void removeLiquido(Liquido liquido) {
-		liquidos.remove(liquido);
-		liquido.setReparacion(null);
-	}
 	
 }

@@ -39,18 +39,24 @@ public class AuthController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody RegisterRequestDTO dto){
+		if (userService.existeUsuario(dto.getUsuario())) {
+			return ResponseEntity
+					.status(HttpStatus.CONFLICT)
+					.body(Map.of("error", "El usuario ya existe"));
+		}
 		
 		Usuario u = new Usuario();
 		u.setUsername(dto.getUsuario());
 		u.setPassword(dto.getPassword());
 		Usuario saved = userService.registrarUsuario(u);
+		
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(Map.of("id", saved.getId(), "username", saved.getUsername()));
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<TokenResponse> login(@RequestBody LoginRequestDTO loginRequest){
+	public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest){
 		logger.info("Usuario: {}, Contraseña: {}", loginRequest.getUsuario(), loginRequest.getPassword());
 		
 		boolean valido = userService.validarCredenciales(loginRequest.getUsuario(), loginRequest.getPassword());
@@ -63,7 +69,10 @@ public class AuthController {
 					"ok",
 					token));
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity
+					.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("error", "Usuario o contraseña incorrectos"));
+					
 		}
 	}
 	

@@ -19,8 +19,9 @@ private final LiquidoRepository liRepo;
 	@Override
 	public List<Liquido> listarLiquidos() {
 
-		return null;
+		return liRepo.findAll();
 	}
-	
+
+
 
 }

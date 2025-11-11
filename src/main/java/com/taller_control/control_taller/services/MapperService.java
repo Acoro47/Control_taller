@@ -32,6 +32,8 @@ public interface MapperService {
 	public Material toMaterial(MaterialDTO mDto);
 	
 	// Liquidos	
+	public List<LiquidoDTO> toListLiquidoDTO(List<Liquido> liquidos);
+	public List<Liquido> toListLiquido(List<LiquidoDTO> dtos);
 	public LiquidoDTO toLiquidoDTO(Liquido liquid);
 	public Liquido toLiquido(LiquidoDTO liquidDTO);
 	

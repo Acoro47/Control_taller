@@ -23,16 +23,7 @@ import com.taller_control.control_taller.models.Vehiculo;
 public class MapperServiceImpl implements MapperService {
 	
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-	private final MaterialServiceImpl mService;
-	private final LiquidoServiceImpl lService;
 	
-	
-	public MapperServiceImpl(MaterialServiceImpl mService,
-								LiquidoServiceImpl lService) {
-		
-		this.mService = mService;
-		this.lService = lService;
-	}
 
 	@Override
 	public VehiculoDTO toVehiculoDTO(Vehiculo v) {
@@ -298,8 +289,33 @@ public class MapperServiceImpl implements MapperService {
 
 	@Override
 	public List<Material> toListMaterial(List<MaterialDTO> dtos) {
-		// TODO Auto-generated method stub
-		return null;
+		if (dtos.size() == 0) {
+			return null;
+		}
+		
+		return dtos.stream()
+				.map(this::toMaterial)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<LiquidoDTO> toListLiquidoDTO(List<Liquido> liquidos) {
+		if (liquidos.size() == 0) {
+			return null;
+		}
+		return liquidos.stream()
+				.map(this::toLiquidoDTO)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Liquido> toListLiquido(List<LiquidoDTO> dtos) {
+		if (dtos.size() == 0) {
+			return null;
+		}
+		return dtos.stream()
+				.map(this::toLiquido)
+				.collect(Collectors.toList());
 	}
 	
 	

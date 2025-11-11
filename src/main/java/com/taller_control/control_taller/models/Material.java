@@ -2,15 +2,16 @@ package com.taller_control.control_taller.models;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -29,19 +30,19 @@ public class Material {
 	@PositiveOrZero(message = "El coste no puede ser negativo")
 	private Float coste;
 	
-	@ManyToOne
-	@JoinColumn(name = "reparacion_id")
+	@ManyToMany(mappedBy="materiales")
 	@JsonBackReference
-	private Reparacion reparacion;
+	private List<Reparacion> reparaciones = new ArrayList<>();
 
-	public Material(Long id, String nombre, Float coste, Reparacion reparacion) {
+	public Material(Long id, String nombre, Float coste, List<Reparacion> reparaciones) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.coste = coste;
-		this.reparacion = reparacion;
+		this.reparaciones = reparaciones;
 	}
 
+	
 	public Material() {
 		super();
 	}
@@ -70,14 +71,13 @@ public class Material {
 		this.coste = coste;
 	}
 
-	public Reparacion getReparacion() {
-		return reparacion;
+	public List<Reparacion> getReparaciones() {
+		return reparaciones;
 	}
 
-	public void setReparacion(Reparacion reparacion) {
-		this.reparacion = reparacion;
+	public void setReparaciones(List<Reparacion> reparaciones) {
+		this.reparaciones = reparaciones;
 	}
 
-	
 
 }

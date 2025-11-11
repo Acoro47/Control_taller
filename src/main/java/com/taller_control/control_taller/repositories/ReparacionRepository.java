@@ -1,11 +1,11 @@
 package com.taller_control.control_taller.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.taller_control.control_taller.dtos.ReparacionDTO;
 import com.taller_control.control_taller.models.Estado;
 import com.taller_control.control_taller.models.Reparacion;
 
@@ -19,6 +19,6 @@ public interface ReparacionRepository extends JpaRepository<Reparacion, Long>{
 	
 	// Reparacion iniciada
 	
-	Reparacion findByEstado(Estado estado);
+	Optional<Reparacion> findByEstado(Estado estado);
 	
 }
